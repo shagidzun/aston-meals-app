@@ -5,9 +5,44 @@
 		"plugin:react/jsx-runtime",
 		"prettier"
 	],
+	"settings": {
+		"react": {
+			"createClass": "createReactClass",
+			"pragma": "React",
+			"fragment": "Fragment",
+			"version": "detect",
+			"flowVersion": "0.53"
+		},
+		"propWrapperFunctions": [
+			"forbidExtraProps",
+			{"property": "freeze", "object": "Object"},
+			{"property": "myFavoriteWrapper"},
+			{"property": "forbidExtraProps", "exact": true}
+		],
+		"componentWrapperFunctions": [
+			"observer",
+			{"property": "styled"},
+			{"property": "observer", "object": "Mobx"},
+			{"property": "observer", "object": "<pragma>"}
+		],
+		"formComponents": [
+			"CustomForm",
+			{"name": "Form", "formAttribute": "endpoint"}
+		],
+		"linkComponents": [
+			"Hyperlink",
+			{"name": "Link", "linkAttribute": "to"}
+		]
+	},
 	"parser": "@typescript-eslint/parser",
-	"parserOptions": { "project": true, "tsconfigRootDir": "./" },
-	"plugins": ["@typescript-eslint"],
+	"parserOptions": {
+		"project": true,
+		"tsconfigRootDir": "./",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"plugins": ["@typescript-eslint", "react", "import"],
 	"root": true,
 	"ignorePatterns": ["dist"],
 	"rules": {
@@ -30,7 +65,12 @@
 		"indent": ["error", "tab"],
 		"quotes": ["error", "double"],
 		"semi": ["error", "always"],
-		"comma-dangle": ["error", "never"]
+		"comma-dangle": ["error", "never"],
+		"no-console": "warn",
+		"curly": "error",
+		"no-unused-expressions": "error",
+		"react/jsx-no-useless-fragment": 2,
+		"import/order": "error"
 	},
 	"overrides": [
 		{ "files": ["*.{c,m,}{t,j}s", "*.{t,j}sx"] },
