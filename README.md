@@ -1,1 +1,1 @@
-![Vercel](https://vercelbadge.vercel.app/api/shagidzun/aston-meals-app)
+![Vercel Deploy](https://github.com/shagidzun/aston-meals-app/actions/workflows/production.yaml/badge.svg?event=push)
