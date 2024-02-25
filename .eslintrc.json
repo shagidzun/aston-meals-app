@@ -15,24 +15,21 @@
 		},
 		"propWrapperFunctions": [
 			"forbidExtraProps",
-			{"property": "freeze", "object": "Object"},
-			{"property": "myFavoriteWrapper"},
-			{"property": "forbidExtraProps", "exact": true}
+			{ "property": "freeze", "object": "Object" },
+			{ "property": "myFavoriteWrapper" },
+			{ "property": "forbidExtraProps", "exact": true }
 		],
 		"componentWrapperFunctions": [
 			"observer",
-			{"property": "styled"},
-			{"property": "observer", "object": "Mobx"},
-			{"property": "observer", "object": "<pragma>"}
+			{ "property": "styled" },
+			{ "property": "observer", "object": "Mobx" },
+			{ "property": "observer", "object": "<pragma>" }
 		],
 		"formComponents": [
 			"CustomForm",
-			{"name": "Form", "formAttribute": "endpoint"}
+			{ "name": "Form", "formAttribute": "endpoint" }
 		],
-		"linkComponents": [
-			"Hyperlink",
-			{"name": "Link", "linkAttribute": "to"}
-		]
+		"linkComponents": ["Hyperlink", { "name": "Link", "linkAttribute": "to" }]
 	},
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
