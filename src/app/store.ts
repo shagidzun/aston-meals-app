@@ -2,7 +2,7 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit";
 
 const rootReducer = combineSlices();
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
 export const store = configureStore({
 	reducer: rootReducer,
@@ -11,5 +11,5 @@ export const store = configureStore({
 	}
 });
 
-export type AppStore = typeof store
-export type AppDispatch = AppStore["dispatch"]
+export type AppStore = typeof store;
+export type AppDispatch = AppStore["dispatch"];
