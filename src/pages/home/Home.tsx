@@ -14,7 +14,6 @@ import { useGetMealsCategoriesQuery } from "../../services/mealsApi";
 
 export const Home = () => {
 	const { data, isError, isSuccess } = useGetMealsCategoriesQuery();
-	console.log(data);
 	return (
 		<>
 			<Navigation />
