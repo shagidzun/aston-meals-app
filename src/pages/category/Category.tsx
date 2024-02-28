@@ -7,7 +7,7 @@ import {
 	ListItemAvatar,
 	ListItemText
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Fragment } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
@@ -37,15 +37,20 @@ export const Category = () => {
 						</ListItemAvatar>
 						<ListItemText primary={matchedCategory?.strCategory} />
 					</ListItem>
-					{data?.meals.map((category, i) => (
-						<Fragment key={category.idMeal}>
+					{data?.meals.map((meal, i) => (
+						<Fragment key={meal.idMeal}>
 							{i !== 0 && <Divider component="li" />}
-							<ListItem>
-								<ListItemAvatar>
-									<Avatar src={category.strMealThumb} alt={category.strMeal} />
-								</ListItemAvatar>
-								<ListItemText primary={category.strMeal} />
-							</ListItem>
+							<Link to={`/meal/${meal.idMeal}`}>
+								<ListItem>
+									<ListItemAvatar>
+										<Avatar
+											src={meal.strMealThumb + "/preview"}
+											alt={meal.strMeal}
+										/>
+									</ListItemAvatar>
+									<ListItemText primary={meal.strMeal} />
+								</ListItem>
+							</Link>
 						</Fragment>
 					))}
 				</List>
