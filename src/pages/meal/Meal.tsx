@@ -19,9 +19,7 @@ export const Meal = () => {
 	const { id } = useParams();
 	const { data, isError, isSuccess } = useGetMealByIdQuery(id);
 	const meal = data?.meals[0];
-	// @ts-ignore
 	const ingredients = filterProps(meal, "strIngredient");
-	// @ts-ignore
 	const measures = filterProps(meal, "strMeasure");
 	return (
 		<>
