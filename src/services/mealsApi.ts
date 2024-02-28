@@ -1,24 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-interface Category {
-	idCategory: string;
-	strCategory: string;
-	strCategoryDescription: string;
-	strCategoryThumb: string;
-}
-
-interface Meal {
-	idMeal: string;
-	strMeal: string;
-	strMealThumb: string;
-}
-interface MealsApiResponseCategories {
-	categories: Category[];
-}
-
-interface MealsApiResponse {
-	meals: Meal[];
-}
+import type {
+	MealsApiFullMealResponse,
+	MealsApiResponse,
+	MealsApiResponseCategories
+} from "../types/apiTypes";
 
 export const mealsApi = createApi({
 	baseQuery: fetchBaseQuery({
@@ -31,9 +16,15 @@ export const mealsApi = createApi({
 		}),
 		getMealsByCategory: build.query<MealsApiResponse, string | undefined>({
 			query: category => `filter.php?c=${category}`
+		}),
+		getMealById: build.query<MealsApiFullMealResponse, string | undefined>({
+			query: id => `/lookup.php?i=${id}`
 		})
 	})
 });
 
-export const { useGetMealsCategoriesQuery, useGetMealsByCategoryQuery } =
-	mealsApi;
+export const {
+	useGetMealsCategoriesQuery,
+	useGetMealsByCategoryQuery,
+	useGetMealByIdQuery
+} = mealsApi;
