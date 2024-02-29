@@ -14,11 +14,23 @@ export const mealsApi = createApi({
 		getMealsCategories: build.query<MealsApiResponseCategories, void>({
 			query: () => "categories.php"
 		}),
-		getMealsByCategory: build.query<MealsApiResponse, string | undefined>({
+		getMealsByCategory: build.query<
+			MealsApiResponse,
+			string | null | undefined
+		>({
 			query: category => `filter.php?c=${category}`
 		}),
-		getMealById: build.query<MealsApiFullMealResponse, string | undefined>({
+		getMealById: build.query<
+			MealsApiFullMealResponse,
+			string | null | undefined
+		>({
 			query: id => `/lookup.php?i=${id}`
+		}),
+		getMealByName: build.query<
+			MealsApiFullMealResponse,
+			string | null | undefined
+		>({
+			query: name => `/search.php?s=${name}`
 		})
 	})
 });
@@ -26,5 +38,6 @@ export const mealsApi = createApi({
 export const {
 	useGetMealsCategoriesQuery,
 	useGetMealsByCategoryQuery,
-	useGetMealByIdQuery
+	useGetMealByIdQuery,
+	useGetMealByNameQuery
 } = mealsApi;

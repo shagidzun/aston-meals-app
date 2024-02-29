@@ -70,7 +70,7 @@ interface MealsApiResponse {
 }
 
 interface MealsApiFullMealResponse {
-	meals: [Partial<MealFull>];
+	meals: Partial<MealFull>[];
 }
 
 export type {
