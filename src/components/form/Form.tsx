@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 
 interface FormProps {
 	title: "Sign up" | "Sign in";
-	handleSubmit: () => void;
+	handleSubmit: (email: string, password: string) => void;
 }
 export const Form = ({ title, handleSubmit }: FormProps) => {
 	const [email, setEmail] = useState<string>("");
@@ -58,7 +58,10 @@ export const Form = ({ title, handleSubmit }: FormProps) => {
 					label="Password"
 				/>
 			</FormControl>
-			<Button sx={{ m: 1, width: "25ch" }} onClick={handleSubmit}>
+			<Button
+				sx={{ m: 1, width: "25ch" }}
+				onClick={() => handleSubmit(email, password)}
+			>
 				{title}
 			</Button>
 			<Typography>
