@@ -17,10 +17,9 @@ export const Navigation = () => {
 		signOut(auth)
 			.then(() => {
 				dispatch(removeUser());
-				console.log(auth.currentUser);
 			})
 			.catch(error => {
-				console.log(error);
+				console.log(error); //временно, позже будет показ ошибки в ui
 			});
 	};
 	useEffect(() => {
