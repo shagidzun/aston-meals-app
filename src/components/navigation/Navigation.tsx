@@ -61,6 +61,14 @@ export const Navigation = () => {
 			>
 				{isAuth ? (
 					<>
+						<Link
+							style={{ textDecoration: "none", color: "inherit" }}
+							to={"/history"}
+						>
+							<Button sx={{ my: 2, color: "white", display: "block" }}>
+								History
+							</Button>
+						</Link>
 						<Typography>{auth.currentUser?.email}</Typography>
 						<Button
 							sx={{ my: 2, color: "white", display: "block" }}

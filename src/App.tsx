@@ -5,6 +5,7 @@ import { Meal } from "./pages/meal/Meal";
 import { Search } from "./pages/Search/Search";
 import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
+import { History } from "./pages/history/History";
 
 const router = createBrowserRouter([
 	{
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
 	{
 		path: "/signin",
 		element: <SignIn />
+	},
+	{
+		path: "/history",
+		element: <History />
 	}
 ]);
 const App = () => {
