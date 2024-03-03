@@ -18,7 +18,7 @@ export const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
 	const dispatch = useAppDispatch();
-	const history = useAppSelector(selectHistory).history;
+	const history = useAppSelector(selectHistory);
 	useEffect(() => {
 		if (isAuth) {
 			dispatch(getHistory(userId));

@@ -64,7 +64,7 @@ export const historySlice = createAppSlice({
 		})
 	}),
 	selectors: {
-		selectHistory: state => state
+		selectHistory: state => state.history
 	}
 });
 
