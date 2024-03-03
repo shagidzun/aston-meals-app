@@ -12,18 +12,22 @@ export const SignUp = () => {
 	const dispatch = useAppDispatch();
 	const auth = getAuth();
 	const navigate = useNavigate();
+	//TODO: перенести в слайс
 	const handleSignUp = (email: string, password: string) => {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then(userCredential => {
 				const user = userCredential.user;
+				const userRef = doc(db, "users", user.uid);
 				user.getIdToken().then(token => {
 					dispatch(setUser(user.email, token, user.uid));
 				});
-				setDoc(doc(db, "users", user.uid), {
+				setDoc(userRef, {
 					email: user.email,
 					id: user.uid,
+					history: [],
 					date: new Date().toISOString()
 				});
+
 				navigate("/");
 			})
 			.catch(console.log); //временно, позже будет показ ошибки в ui
