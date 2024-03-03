@@ -9,16 +9,29 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Fragment } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectId, selectIsAuth } from "../../features/user/userSlice";
+import { updateHistory } from "../../features/history/historySlice";
 
 export const Search = () => {
 	const [searchParams] = useSearchParams();
 	const q = searchParams.get("q");
+	const location = useLocation();
+	const url = location.pathname + location.search;
+	const isAuth = useAppSelector(selectIsAuth);
+	const userId = useAppSelector(selectId);
+	const dispatch = useAppDispatch();
 	const { data, isLoading, isError } = useGetMealByNameQuery(q);
+	useEffect(() => {
+		if (isAuth) {
+			dispatch(updateHistory({ url, userId }));
+		}
+	}, [dispatch, isAuth, url, userId]);
 	return (
 		<>
 			<Navigation />
