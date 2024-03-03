@@ -1,7 +1,7 @@
 import Container from "@mui/material/Container";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { Navigation } from "../../components/navigation/Navigation";
 import { Form } from "../../components/form/Form";
 import { useAppDispatch } from "../../app/hooks";
