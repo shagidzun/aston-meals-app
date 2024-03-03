@@ -1,8 +1,9 @@
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { mealsApi } from "../services/mealsApi";
 import { userSlice } from "../features/user/userSlice";
+import { historySlice } from "../features/history/historySlice";
 
-const rootReducer = combineSlices(mealsApi, userSlice);
+const rootReducer = combineSlices(mealsApi, userSlice, historySlice);
 
 export type RootState = ReturnType<typeof rootReducer>;
 

@@ -39,9 +39,10 @@ export const userSlice = createAppSlice({
 		})
 	}),
 	selectors: {
-		selectIsAuth: user => user.isAuth
+		selectIsAuth: user => user.isAuth,
+		selectId: user => user.id
 	}
 });
 
 export const { setUser, removeUser } = userSlice.actions;
-export const { selectIsAuth } = userSlice.selectors;
+export const { selectIsAuth, selectId } = userSlice.selectors;
