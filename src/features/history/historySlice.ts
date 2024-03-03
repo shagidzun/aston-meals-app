@@ -58,12 +58,15 @@ export const historySlice = createAppSlice({
 					console.error("Error");
 				}
 			}
-		)
+		),
+		clearHistory: create.reducer(state => {
+			state.history = [];
+		})
 	}),
 	selectors: {
 		selectHistory: state => state
 	}
 });
 
-export const { updateHistory, getHistory } = historySlice.actions;
+export const { updateHistory, getHistory, clearHistory } = historySlice.actions;
 export const { selectHistory } = historySlice.selectors;

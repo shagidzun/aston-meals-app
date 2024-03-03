@@ -8,6 +8,7 @@ import {
 	selectIsAuth,
 	setUser
 } from "../../features/user/userSlice";
+import { clearHistory } from "../../features/history/historySlice";
 // временно нагрузил навигацию, на стадии рефакторинга исправлю
 export const Navigation = () => {
 	const isAuth = useAppSelector(selectIsAuth);
@@ -17,6 +18,7 @@ export const Navigation = () => {
 		signOut(auth)
 			.then(() => {
 				dispatch(removeUser());
+				dispatch(clearHistory());
 			})
 			.catch(error => {
 				console.log(error); //временно, позже будет показ ошибки в ui
