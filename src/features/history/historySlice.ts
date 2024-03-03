@@ -2,17 +2,30 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
 
+interface HistorySliceState {
+	history: string[];
+}
+
+const initialState: HistorySliceState = {
+	history: []
+};
 export const historySlice = createAppSlice({
 	name: "history",
-	initialState: [],
+	initialState,
 	reducers: create => ({
 		updateHistory: create.asyncThunk(
-			async ({ q, userId }: { q: string; userId: string }) => {
+			async ({
+				url,
+				userId
+			}: {
+				url: string | null;
+				userId: string | null;
+			}) => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
 					const history = userSnap.data().history;
-					history.push(q);
+					history.push(url);
 					await updateDoc(userRef, {
 						history: history
 					});
@@ -22,21 +35,27 @@ export const historySlice = createAppSlice({
 			},
 			{
 				fulfilled: (state, action) => {
-					state = action.payload;
-				}
+					state.history = action.payload;
+				},
+				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
 			}
 		),
 		getHistory: create.asyncThunk(
-			async (userId: string) => {
+			async (userId: string | null) => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					return userSnap.data().history;
+					return await userSnap.data().history;
 				}
+				return [];
 			},
 			{
 				fulfilled: (state, action) => {
-					state = action.payload;
+					state.history = action.payload;
+				},
+				rejected: state => {
+					//TODO: придумать, что делать с ошибкой
+					console.error("Error");
 				}
 			}
 		)
@@ -46,5 +65,5 @@ export const historySlice = createAppSlice({
 	}
 });
 
-export const { updateHistory } = historySlice.actions;
+export const { updateHistory, getHistory } = historySlice.actions;
 export const { selectHistory } = historySlice.selectors;
