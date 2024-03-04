@@ -65,6 +65,14 @@ export const Navigation = () => {
 					<>
 						<Link
 							style={{ textDecoration: "none", color: "inherit" }}
+							to={"/favorites"}
+						>
+							<Button sx={{ my: 2, color: "white", display: "block" }}>
+								Favorites
+							</Button>
+						</Link>
+						<Link
+							style={{ textDecoration: "none", color: "inherit" }}
 							to={"/history"}
 						>
 							<Button sx={{ my: 2, color: "white", display: "block" }}>

@@ -2,6 +2,7 @@ import Container from "@mui/material/Container";
 import {
 	Avatar,
 	Divider,
+	IconButton,
 	LinearProgress,
 	List,
 	ListItem,
@@ -10,15 +11,27 @@ import {
 	Typography
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
+import { Favorite } from "@mui/icons-material";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
 	useGetMealsByCategoryQuery,
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+	getFavorites,
+	selectFavorites,
+	updateFavorites
+} from "../../features/favorites/favoritesSlice";
+import { selectId, selectIsAuth } from "../../features/user/userSlice";
 
 export const Category = () => {
+	const dispatch = useAppDispatch();
+	const isAuth = useAppSelector(selectIsAuth);
+	const userId = useAppSelector(selectId);
+	const favorites = useAppSelector(selectFavorites);
 	const { category: currentCategory } = useParams();
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
@@ -26,6 +39,14 @@ export const Category = () => {
 	const matchedCategory = categoriesData?.categories.find(
 		category => category.strCategory === currentCategory
 	);
+	const handleUpdateFavorites = (meal: string, mealId: string) => {
+		dispatch(updateFavorites({ meal, mealId, userId }));
+	};
+	useEffect(() => {
+		if (isAuth) {
+			dispatch(getFavorites(userId));
+		}
+	}, [dispatch, isAuth, userId]);
 	return (
 		<>
 			<Navigation />
@@ -51,6 +72,23 @@ export const Category = () => {
 								{i !== 0 && <Divider component="li" />}
 								<Link to={`/meal/${meal.idMeal}`}>
 									<ListItem>
+										<IconButton
+											color={
+												favorites.some(
+													item =>
+														item.mealId === meal.idMeal &&
+														item.meal === meal.strMeal
+												)
+													? "secondary"
+													: "primary"
+											}
+											onClick={e => {
+												e.preventDefault();
+												handleUpdateFavorites(meal.strMeal, meal.idMeal);
+											}}
+										>
+											<Favorite />
+										</IconButton>
 										<ListItemAvatar>
 											<Avatar
 												src={meal.strMealThumb + "/preview"}
