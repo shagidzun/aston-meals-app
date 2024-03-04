@@ -25,7 +25,6 @@ export const SignUp = () => {
 					email: user.email,
 					id: user.uid,
 					history: [],
-					favorites: [],
 					date: new Date().toISOString()
 				});
 
