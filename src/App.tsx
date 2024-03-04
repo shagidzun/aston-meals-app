@@ -6,6 +6,7 @@ import { Search } from "./pages/Search/Search";
 import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
 import { History } from "./pages/history/History";
+import { Favorites } from "./pages/favorites/Favorites";
 
 const router = createBrowserRouter([
 	{
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
 	{
 		path: "/history",
 		element: <History />
+	},
+	{
+		path: "/favorites",
+		element: <Favorites />
 	}
 ]);
 const App = () => {
