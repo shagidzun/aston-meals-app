@@ -45,7 +45,7 @@ export const historySlice = createAppSlice({
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					return await userSnap.data().history;
+					return userSnap.data().history;
 				}
 				return [];
 			},
