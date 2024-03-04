@@ -10,8 +10,8 @@ import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
 
 export interface FavoriteItem {
-	meal: string;
-	mealId: string;
+	meal: string | null;
+	mealId: string | null;
 }
 
 interface FavoritesSliceState {
@@ -34,6 +34,7 @@ export const favoritesSlice = createAppSlice({
 					const favoriteRef = collection(db, `users/${userId}/favorites`);
 					const favoriteSnap = await getDocs(favoriteRef);
 					favoriteSnap.forEach(doc => {
+						//.data() возращает свой встроенный тип, поэтому тут as
 						favorites.push(doc.data() as FavoriteItem);
 					});
 					return favorites;
@@ -56,9 +57,9 @@ export const favoritesSlice = createAppSlice({
 				mealId,
 				userId
 			}: {
-				meal: string;
-				mealId: string;
-				userId: string;
+				meal: string | null;
+				mealId: string | null;
+				userId: string | null;
 			}) => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
@@ -69,6 +70,7 @@ export const favoritesSlice = createAppSlice({
 					const favoriteItemSnap = await getDoc(favoriteItemRef);
 					const favoriteSnap = await getDocs(favoriteRef);
 					favoriteSnap.forEach(doc => {
+						//.data() возращает свой встроенный тип, поэтому тут as
 						favorites.push(doc.data() as FavoriteItem);
 					});
 					if (favoriteItemSnap.exists()) {
