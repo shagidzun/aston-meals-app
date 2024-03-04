@@ -1,10 +1,21 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+	collection,
+	deleteDoc,
+	doc,
+	getDoc,
+	getDocs,
+	setDoc
+} from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
-import { removeDuplicates } from "../../utils/removeDuplicates";
+
+export interface FavoriteItem {
+	meal: string;
+	mealId: string;
+}
 
 interface FavoritesSliceState {
-	favorites: string[];
+	favorites: FavoriteItem[];
 }
 
 const initialState: FavoritesSliceState = {
@@ -19,7 +30,13 @@ export const favoritesSlice = createAppSlice({
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					return removeDuplicates(userSnap.data().favorites);
+					const favorites: FavoriteItem[] = [];
+					const favoriteRef = collection(db, `users/${userId}/favorites`);
+					const favoriteSnap = await getDocs(favoriteRef);
+					favoriteSnap.forEach(doc => {
+						favorites.push(doc.data() as FavoriteItem);
+					});
+					return favorites;
 				}
 				return [];
 			},
@@ -34,20 +51,42 @@ export const favoritesSlice = createAppSlice({
 			}
 		),
 		updateFavorites: create.asyncThunk(
-			async ({ meal, userId }: { meal: string; userId: string | null }) => {
+			async ({
+				meal,
+				mealId,
+				userId
+			}: {
+				meal: string;
+				mealId: string;
+				userId: string;
+			}) => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					let favorites: string[] = userSnap.data().favorites;
-					if (favorites.includes(meal)) {
-						favorites = favorites.filter(fav => fav !== meal);
-					} else {
-						favorites.push(meal);
-					}
-					removeDuplicates(favorites);
-					await updateDoc(userRef, {
-						meal: favorites
+					const favorites: FavoriteItem[] = [];
+					const favoriteItemRef = doc(db, `users/${userId}/favorites/${meal}`);
+					const favoriteRef = collection(db, `users/${userId}/favorites`);
+					const favoriteItemSnap = await getDoc(favoriteItemRef);
+					const favoriteSnap = await getDocs(favoriteRef);
+					favoriteSnap.forEach(doc => {
+						favorites.push(doc.data() as FavoriteItem);
 					});
+					if (favoriteItemSnap.exists()) {
+						await deleteDoc(favoriteItemRef);
+						favorites.filter(
+							item => item.meal !== meal && item.mealId !== mealId
+						);
+					} else {
+						//используется as, т.к. третий аргумент setDoc требует именно string
+						await setDoc(doc(db, `users/${userId}/favorites`, meal as string), {
+							meal,
+							mealId
+						});
+						favorites.push({
+							meal,
+							mealId
+						});
+					}
 					return favorites;
 				}
 				return [];

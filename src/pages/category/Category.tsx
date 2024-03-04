@@ -33,8 +33,8 @@ export const Category = () => {
 	const matchedCategory = categoriesData?.categories.find(
 		category => category.strCategory === currentCategory
 	);
-	const handleUpdateFavorites = (meal: string) => {
-		dispatch(updateFavorites({ meal, userId }));
+	const handleUpdateFavorites = (meal: string, mealId: string) => {
+		dispatch(updateFavorites({ meal, mealId, userId }));
 	};
 	return (
 		<>
@@ -64,7 +64,7 @@ export const Category = () => {
 										<IconButton
 											onClick={e => {
 												e.preventDefault();
-												handleUpdateFavorites(meal.strMeal);
+												handleUpdateFavorites(meal.strMeal, meal.idMeal);
 											}}
 										>
 											<Favorite />
