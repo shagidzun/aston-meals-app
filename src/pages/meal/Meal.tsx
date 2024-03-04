@@ -18,13 +18,17 @@ import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
 import { SearchField } from "../../components/search/SearchField";
-import { updateFavorites } from "../../features/favorites/favoritesSlice";
+import {
+	selectFavorites,
+	updateFavorites
+} from "../../features/favorites/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectId } from "../../features/user/userSlice";
 
 export const Meal = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
+	const favorites = useAppSelector(selectFavorites);
 	const { id } = useParams();
 	const { data, isError, isLoading } = useGetMealByIdQuery(id);
 	const meal = data?.meals[0];
@@ -60,6 +64,15 @@ export const Meal = () => {
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
 									<IconButton
+										color={
+											favorites.some(
+												item =>
+													item.mealId === meal?.idMeal &&
+													item.meal === meal?.strMeal
+											)
+												? "secondary"
+												: "primary"
+										}
 										onClick={e => {
 											e.preventDefault();
 											handleUpdateFavorites(

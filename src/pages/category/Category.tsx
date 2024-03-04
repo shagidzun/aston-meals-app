@@ -20,12 +20,16 @@ import {
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { updateFavorites } from "../../features/favorites/favoritesSlice";
+import {
+	selectFavorites,
+	updateFavorites
+} from "../../features/favorites/favoritesSlice";
 import { selectId } from "../../features/user/userSlice";
 
 export const Category = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
+	const favorites = useAppSelector(selectFavorites);
 	const { category: currentCategory } = useParams();
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
@@ -62,6 +66,15 @@ export const Category = () => {
 								<Link to={`/meal/${meal.idMeal}`}>
 									<ListItem>
 										<IconButton
+											color={
+												favorites.some(
+													item =>
+														item.mealId === meal.idMeal &&
+														item.meal === meal.strMeal
+												)
+													? "secondary"
+													: "primary"
+											}
 											onClick={e => {
 												e.preventDefault();
 												handleUpdateFavorites(meal.strMeal, meal.idMeal);
