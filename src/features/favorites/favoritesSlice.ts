@@ -64,7 +64,7 @@ export const favoritesSlice = createAppSlice({
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					const favorites: FavoriteItem[] = [];
+					let favorites: FavoriteItem[] = [];
 					const favoriteItemRef = doc(db, `users/${userId}/favorites/${meal}`);
 					const favoriteRef = collection(db, `users/${userId}/favorites`);
 					const favoriteItemSnap = await getDoc(favoriteItemRef);
@@ -75,7 +75,7 @@ export const favoritesSlice = createAppSlice({
 					});
 					if (favoriteItemSnap.exists()) {
 						await deleteDoc(favoriteItemRef);
-						favorites.filter(
+						favorites = favorites.filter(
 							item => item.meal !== meal && item.mealId !== mealId
 						);
 					} else {
