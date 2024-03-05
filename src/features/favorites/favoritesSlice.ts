@@ -99,12 +99,16 @@ export const favoritesSlice = createAppSlice({
 				},
 				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
 			}
-		)
+		),
+		clearFavorites: create.reducer(state => {
+			state.favorites = [];
+		})
 	}),
 	selectors: {
 		selectFavorites: state => state.favorites
 	}
 });
 
-export const { getFavorites, updateFavorites } = favoritesSlice.actions;
+export const { getFavorites, updateFavorites, clearFavorites } =
+	favoritesSlice.actions;
 export const { selectFavorites } = favoritesSlice.selectors;
