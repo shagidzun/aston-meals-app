@@ -6,24 +6,19 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Navigation } from "../../components/navigation/Navigation";
 import { SearchField } from "../../components/search/SearchField";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector, useGetOrUpdateData } from "../../app/hooks";
 import { selectId, selectIsAuth } from "../../features/user/userSlice";
 import { getHistory, selectHistory } from "../../features/history/historySlice";
 //TODO: добавить состояние загрузки
 export const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
-	const dispatch = useAppDispatch();
 	const history = useAppSelector(selectHistory);
-	useEffect(() => {
-		if (isAuth) {
-			dispatch(getHistory(userId));
-		}
-	}, [dispatch, isAuth, userId]);
+	useGetOrUpdateData(userId, null, getHistory);
 	return (
 		<>
 			<Navigation />
