@@ -5,7 +5,10 @@ export function filterProps(
 	prop: string
 ): (string | null)[] {
 	return Object.entries(obj)
-		.filter(([key, value]) => key.startsWith(prop) && value?.trim() !== "")
+		.filter(
+			([key, value]) =>
+				key.startsWith(prop) && value?.trim() !== "" && value !== null
+		)
 		.map(([_, value]) => {
 			return value;
 		});
