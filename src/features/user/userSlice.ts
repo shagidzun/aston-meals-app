@@ -3,6 +3,7 @@ import {
 	signInWithEmailAndPassword
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { auth } from "../../firebase/firebase";
 import { db } from "../../firebase/firebase";
@@ -98,7 +99,19 @@ export const userSlice = createAppSlice({
 			state.isAuth = false;
 			state.email = null;
 			state.id = null;
-		})
+		}),
+		getCurrentUser: create.preparedReducer(
+			(email: string | null, id: string) => {
+				return {
+					payload: { isAuth: true, email, id }
+				};
+			},
+			(state, action: PayloadAction<UserSliceState>) => {
+				state.isAuth = action.payload.isAuth;
+				state.email = action.payload.email;
+				state.id = action.payload.id;
+			}
+		)
 	}),
 	selectors: {
 		selectIsAuth: user => user.isAuth,
@@ -107,5 +120,6 @@ export const userSlice = createAppSlice({
 	}
 });
 
-export const { userSignUp, userSignIn, userSignOut } = userSlice.actions;
+export const { userSignUp, userSignIn, userSignOut, getCurrentUser } =
+	userSlice.actions;
 export const { selectIsAuth, selectId, selectEmail } = userSlice.selectors;
