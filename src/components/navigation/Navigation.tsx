@@ -1,39 +1,20 @@
 import { AppBar, Box, Button, Typography } from "@mui/material";
-import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-	removeUser,
+	selectEmail,
 	selectIsAuth,
-	setUser
+	userSignOut
 } from "../../features/user/userSlice";
-import { clearHistory } from "../../features/history/historySlice";
-// временно нагрузил навигацию, на стадии рефакторинга исправлю
+import { auth } from "../../firebase/firebase";
 export const Navigation = () => {
 	const isAuth = useAppSelector(selectIsAuth);
-	const auth = getAuth();
+	const email = useAppSelector(selectEmail);
 	const dispatch = useAppDispatch();
+	console.log(auth.currentUser);
 	const handleOnSignOut = () => {
-		signOut(auth)
-			.then(() => {
-				dispatch(removeUser());
-				dispatch(clearHistory());
-			})
-			.catch(error => {
-				console.log(error); //временно, позже будет показ ошибки в ui
-			});
+		dispatch(userSignOut());
 	};
-	useEffect(() => {
-		const auth = getAuth();
-		auth.onAuthStateChanged(user => {
-			if (user) {
-				user.getIdToken().then(token => {
-					dispatch(setUser(user.email, token, user.uid));
-				});
-			}
-		});
-	}, [dispatch]);
 	return (
 		<AppBar
 			sx={{
@@ -79,7 +60,7 @@ export const Navigation = () => {
 								History
 							</Button>
 						</Link>
-						<Typography>{auth.currentUser?.email}</Typography>
+						<Typography>{email}</Typography>
 						<Button
 							sx={{ my: 2, color: "white", display: "block" }}
 							onClick={handleOnSignOut}
