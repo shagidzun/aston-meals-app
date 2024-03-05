@@ -26,7 +26,7 @@ export const favoritesSlice = createAppSlice({
 	initialState,
 	reducers: create => ({
 		getFavorites: create.asyncThunk(
-			async (userId: string | null) => {
+			async (userId: string | null): Promise<FavoritesSliceState> => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
@@ -37,13 +37,17 @@ export const favoritesSlice = createAppSlice({
 						//.data() возращает свой встроенный тип, поэтому тут as
 						favorites.push(doc.data() as FavoriteItem);
 					});
-					return favorites;
+					return {
+						favorites
+					};
 				}
-				return [];
+				return {
+					favorites: []
+				};
 			},
 			{
 				fulfilled: (state, action) => {
-					state.favorites = action.payload;
+					state.favorites = action.payload.favorites;
 				},
 				rejected: state => {
 					//TODO: придумать, что делать с ошибкой
@@ -60,7 +64,7 @@ export const favoritesSlice = createAppSlice({
 				meal: string | null;
 				mealId: string | null;
 				userId: string | null;
-			}) => {
+			}): Promise<FavoritesSliceState> => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
@@ -89,13 +93,13 @@ export const favoritesSlice = createAppSlice({
 							mealId
 						});
 					}
-					return favorites;
+					return { favorites };
 				}
-				return [];
+				return { favorites: [] };
 			},
 			{
 				fulfilled: (state, action) => {
-					state.favorites = action.payload;
+					state.favorites = action.payload.favorites;
 				},
 				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
 			}
