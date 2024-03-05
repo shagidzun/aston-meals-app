@@ -79,6 +79,8 @@ export const userSlice = createAppSlice({
 					email,
 					password
 				);
+				//здесь as, т.к. в доке есть такая рекомендация при создании санков через create.asyncThunk
+				//подробнее тут: https://redux-toolkit.js.org/usage/usage-with-typescript#typing-async-thunks-inside-createslice
 				const dispatch = thunkAPI.dispatch as AppDispatch;
 				const user = userCredential.user;
 				const token = await user.getIdToken();
