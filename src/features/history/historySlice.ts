@@ -29,7 +29,7 @@ export const historySlice = createAppSlice({
 					await updateDoc(userRef, {
 						history: history
 					});
-					return history;
+					return { history };
 				}
 				return {
 					history: []
@@ -47,7 +47,8 @@ export const historySlice = createAppSlice({
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					return userSnap.data().history;
+					console.log("sssad");
+					return { history: userSnap.data().history };
 				}
 				return {
 					history: []
@@ -55,6 +56,7 @@ export const historySlice = createAppSlice({
 			},
 			{
 				fulfilled: (state, action) => {
+					console.log(action.payload.history);
 					state.history = action.payload.history;
 				},
 				rejected: state => {
