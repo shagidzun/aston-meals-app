@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 import { Home } from "./pages/home/Home";
 import { Category } from "./pages/category/Category";
 import { Meal } from "./pages/meal/Meal";
@@ -7,6 +8,15 @@ import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
 import { History } from "./pages/history/History";
 import { Favorites } from "./pages/favorites/Favorites";
+import { auth } from "./firebase/firebase";
+import { store } from "./app/store";
+import { getCurrentUser } from "./features/user/userSlice";
+
+onAuthStateChanged(auth, user => {
+	if (user) {
+		store.dispatch(getCurrentUser(user.email, user.uid));
+	}
+});
 
 const router = createBrowserRouter([
 	{

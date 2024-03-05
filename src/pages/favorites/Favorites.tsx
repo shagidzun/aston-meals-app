@@ -6,11 +6,11 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector, useGetOrUpdateData } from "../../app/hooks";
 import { selectId, selectIsAuth } from "../../features/user/userSlice";
 import {
 	getFavorites,
@@ -20,13 +20,8 @@ import {
 export const Favorites = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
-	const dispatch = useAppDispatch();
 	const favorites = useAppSelector(selectFavorites);
-	useEffect(() => {
-		if (isAuth) {
-			dispatch(getFavorites(userId));
-		}
-	}, [dispatch, isAuth, userId]);
+	useGetOrUpdateData(userId, null, getFavorites);
 	return (
 		<>
 			<Navigation />

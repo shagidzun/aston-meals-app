@@ -20,7 +20,7 @@ export const historySlice = createAppSlice({
 			}: {
 				url: string | null;
 				userId: string | null;
-			}) => {
+			}): Promise<HistorySliceState> => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
@@ -29,29 +29,35 @@ export const historySlice = createAppSlice({
 					await updateDoc(userRef, {
 						history: history
 					});
-					return history;
+					return { history };
 				}
-				return [];
+				return {
+					history: []
+				};
 			},
 			{
 				fulfilled: (state, action) => {
-					state.history = action.payload;
+					state.history = action.payload.history;
 				},
 				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
 			}
 		),
 		getHistory: create.asyncThunk(
-			async (userId: string | null) => {
+			async (userId: string | null): Promise<HistorySliceState> => {
 				const userRef = doc(db, `users/${userId}`);
 				const userSnap = await getDoc(userRef);
 				if (userSnap.exists()) {
-					return userSnap.data().history;
+					console.log("sssad");
+					return { history: userSnap.data().history };
 				}
-				return [];
+				return {
+					history: []
+				};
 			},
 			{
 				fulfilled: (state, action) => {
-					state.history = action.payload;
+					console.log(action.payload.history);
+					state.history = action.payload.history;
 				},
 				rejected: state => {
 					//TODO: придумать, что делать с ошибкой

@@ -11,7 +11,7 @@ import {
 	Typography
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Favorite } from "@mui/icons-material";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
@@ -19,17 +19,20 @@ import {
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+	useAppDispatch,
+	useAppSelector,
+	useGetOrUpdateData
+} from "../../app/hooks";
 import {
 	getFavorites,
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
-import { selectId, selectIsAuth } from "../../features/user/userSlice";
+import { selectId } from "../../features/user/userSlice";
 
 export const Category = () => {
 	const dispatch = useAppDispatch();
-	const isAuth = useAppSelector(selectIsAuth);
 	const userId = useAppSelector(selectId);
 	const favorites = useAppSelector(selectFavorites);
 	const { category: currentCategory } = useParams();
@@ -42,11 +45,7 @@ export const Category = () => {
 	const handleUpdateFavorites = (meal: string, mealId: string) => {
 		dispatch(updateFavorites({ meal, mealId, userId }));
 	};
-	useEffect(() => {
-		if (isAuth) {
-			dispatch(getFavorites(userId));
-		}
-	}, [dispatch, isAuth, userId]);
+	useGetOrUpdateData(userId, null, getFavorites);
 	return (
 		<>
 			<Navigation />

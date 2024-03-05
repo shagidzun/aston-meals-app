@@ -6,6 +6,8 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import type { AsyncThunk } from "@reduxjs/toolkit";
+import { selectIsAuth } from "../features/user/userSlice";
 import type { AppDispatch, RootState } from "./store";
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
@@ -25,4 +27,19 @@ export const useDebounce = <T>(value: T, delay: number): T => {
 	}, [value, delay]);
 
 	return debouncedValue;
+};
+
+export const useGetOrUpdateData = <T>(
+	arg1: string | null,
+	arg2: string | null,
+	action: AsyncThunk<T, any, any> //TODO: fix types if possible
+): void => {
+	const dispatch = useAppDispatch();
+	const isAuth = useAppSelector(selectIsAuth);
+	useEffect(() => {
+		console.log(isAuth);
+		if (isAuth) {
+			dispatch(action(arg2 ? { arg1, arg2 } : arg1));
+		}
+	}, [dispatch, action, arg1, arg2, isAuth]);
 };
