@@ -6,12 +6,10 @@ import {
 	selectIsAuth,
 	userSignOut
 } from "../../features/user/userSlice";
-import { auth } from "../../firebase/firebase";
 export const Navigation = () => {
 	const isAuth = useAppSelector(selectIsAuth);
 	const email = useAppSelector(selectEmail);
 	const dispatch = useAppDispatch();
-	console.log(auth.currentUser);
 	const handleOnSignOut = () => {
 		dispatch(userSignOut());
 	};
@@ -29,7 +27,7 @@ export const Navigation = () => {
 			<Box
 				sx={{
 					flexGrow: 1,
-					display: { xs: "none", md: "flex", alignItems: "center" }
+					display: { xs: "flex", md: "flex", alignItems: "center" }
 				}}
 			>
 				<Link style={{ textDecoration: "none", color: "inherit" }} to={"/"}>
@@ -39,7 +37,7 @@ export const Navigation = () => {
 			<Box
 				sx={{
 					flexGrow: 0,
-					display: { xs: "none", md: "flex", alignItems: "center" }
+					display: { xs: "flex", md: "flex", alignItems: "center" }
 				}}
 			>
 				{isAuth ? (
