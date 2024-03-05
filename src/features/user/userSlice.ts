@@ -1,5 +1,14 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
+import {
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
+import { auth } from "../../firebase/firebase";
+import { db } from "../../firebase/firebase";
+import type { AppDispatch } from "../../app/store";
+import { getFavorites } from "../favorites/favoritesSlice";
+import { getHistory } from "../history/historySlice";
 
 export interface UserSliceState {
 	isAuth: boolean;
@@ -18,20 +27,80 @@ export const userSlice = createAppSlice({
 	name: "user",
 	initialState,
 	reducers: create => ({
-		setUser: create.preparedReducer(
-			(email: string | null, token: string, id: string) => {
+		userSignUp: create.asyncThunk(
+			async ({
+				email,
+				password
+			}: {
+				email: string;
+				password: string;
+			}): Promise<UserSliceState> => {
+				const userCredential = await createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+				const user = userCredential.user;
+				const userRef = doc(db, "users", user.uid);
+				const token = await user.getIdToken();
+				await setDoc(userRef, {
+					email: user.email,
+					id: user.uid
+				});
 				return {
-					payload: { isAuth: true, email, token, id }
+					isAuth: true,
+					email: user.email,
+					token,
+					id: user.uid
 				};
 			},
-			(state, action: PayloadAction<UserSliceState>) => {
-				state.isAuth = action.payload.isAuth;
-				state.email = action.payload.email;
-				state.token = action.payload.token;
-				state.id = action.payload.id;
+			{
+				fulfilled: (state, action) => {
+					state.isAuth = action.payload.isAuth;
+					state.email = action.payload.email;
+					state.token = action.payload.token;
+					state.id = action.payload.id;
+				}
 			}
 		),
-		removeUser: create.reducer(state => {
+		userSignIn: create.asyncThunk(
+			async (
+				{
+					email,
+					password
+				}: {
+					email: string;
+					password: string;
+				},
+				thunkAPI
+			): Promise<UserSliceState> => {
+				const userCredential = await signInWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+				const dispatch = thunkAPI.dispatch as AppDispatch;
+				const user = userCredential.user;
+				const token = await user.getIdToken();
+				dispatch(getFavorites(user.uid));
+				dispatch(getHistory(user.uid));
+				return {
+					isAuth: true,
+					email: user.email,
+					token,
+					id: user.uid
+				};
+			},
+			{
+				fulfilled: (state, action) => {
+					state.isAuth = action.payload.isAuth;
+					state.email = action.payload.email;
+					state.token = action.payload.token;
+					state.id = action.payload.id;
+				}
+			}
+		),
+		userSignOut: create.reducer(state => {
 			state.isAuth = false;
 			state.email = null;
 			state.token = null;
@@ -44,5 +113,5 @@ export const userSlice = createAppSlice({
 	}
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { userSignUp, userSignIn, userSignOut } = userSlice.actions;
 export const { selectIsAuth, selectId } = userSlice.selectors;
