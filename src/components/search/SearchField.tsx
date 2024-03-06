@@ -8,12 +8,11 @@ import { useAppDispatch, useAppSelector, useDebounce } from "../../app/hooks";
 import { updateHistory } from "../../features/history/historySlice";
 import { selectId } from "../../features/user/userSlice";
 
-// interface SearchFieldProps {
-// 	url?: string,
-// 	userId?: string
-// }
+interface SearchFieldProps {
+	q?: string | null;
+}
 
-export const SearchField = () => {
+export const SearchField = ({ q }: SearchFieldProps) => {
 	const dispatch = useAppDispatch();
 	const [searchTerm, setSearchTerm] = useState("");
 	const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -44,6 +43,7 @@ export const SearchField = () => {
 						<Autocomplete
 							freeSolo
 							value={searchTerm}
+							defaultValue={q}
 							loading={
 								loading &&
 								debouncedSearchTerm.trim() !== "" &&
