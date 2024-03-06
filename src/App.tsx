@@ -11,6 +11,9 @@ import { Favorites } from "./pages/favorites/Favorites";
 import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
 import { getCurrentUser } from "./features/user/userSlice";
+import { ProtectedRoute } from "./components/protectedRoutes/ProtectedRoute";
+
+const isAuth = store.getState().user?.isAuth;
 
 onAuthStateChanged(auth, user => {
 	if (user) {
@@ -37,19 +40,35 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/signup",
-		element: <SignUp />
+		element: (
+			<ProtectedRoute user={!isAuth}>
+				<SignUp />
+			</ProtectedRoute>
+		)
 	},
 	{
 		path: "/signin",
-		element: <SignIn />
+		element: (
+			<ProtectedRoute user={!isAuth}>
+				<SignIn />
+			</ProtectedRoute>
+		)
 	},
 	{
 		path: "/history",
-		element: <History />
+		element: (
+			<ProtectedRoute user={isAuth}>
+				<History />
+			</ProtectedRoute>
+		)
 	},
 	{
 		path: "/favorites",
-		element: <Favorites />
+		element: (
+			<ProtectedRoute user={isAuth}>
+				<Favorites />
+			</ProtectedRoute>
+		)
 	}
 ]);
 const App = () => {
