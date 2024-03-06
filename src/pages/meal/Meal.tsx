@@ -13,7 +13,6 @@ import {
 	Typography
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { Favorite } from "@mui/icons-material";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
@@ -24,6 +23,7 @@ import {
 } from "../../features/favorites/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectId } from "../../features/user/userSlice";
+import { FavBtn } from "../../components/fav-btn/FavBtn";
 
 export const Meal = () => {
 	const dispatch = useAppDispatch();
@@ -34,8 +34,17 @@ export const Meal = () => {
 	const meal = data?.meals[0];
 	const ingredients = filterProps(meal, "strIngredient");
 	const measures = filterProps(meal, "strMeasure");
-	const handleUpdateFavorites = (meal: string, mealId: string) => {
-		dispatch(updateFavorites({ meal, mealId, userId }));
+	const handleUpdateFavorites = (
+		meal: string | undefined,
+		mealId: string | undefined
+	) => {
+		dispatch(
+			updateFavorites({ meal, mealId, userId } as {
+				meal: string;
+				mealId: string;
+				userId: string;
+			})
+		);
 	};
 	return (
 		<>
@@ -63,27 +72,11 @@ export const Meal = () => {
 								/>
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
-									<IconButton
-										color={
-											favorites.some(
-												item =>
-													item.mealId === meal?.idMeal &&
-													item.meal === meal?.strMeal
-											)
-												? "secondary"
-												: "primary"
-										}
-										onClick={e => {
-											e.preventDefault();
-											handleUpdateFavorites(
-												//useQuery возращает "| undefined", поэтому тут as
-												meal?.strMeal as string,
-												meal?.idMeal as string
-											);
-										}}
-									>
-										<Favorite />
-									</IconButton>
+									<FavBtn
+										item={meal as {}}
+										handleClick={handleUpdateFavorites}
+										favorites={favorites}
+									/>
 								</figcaption>
 							</figure>
 							<TableContainer>

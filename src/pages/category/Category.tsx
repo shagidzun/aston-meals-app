@@ -44,8 +44,17 @@ export const Category = () => {
 	const matchedCategory = categoriesData?.categories.find(
 		category => category.strCategory === currentCategory
 	);
-	const handleUpdateFavorites = (meal: string, mealId: string) => {
-		dispatch(updateFavorites({ meal, mealId, userId }));
+	const handleUpdateFavorites = (
+		meal: string | undefined,
+		mealId: string | undefined
+	) => {
+		dispatch(
+			updateFavorites({ meal, mealId, userId } as {
+				meal: string;
+				mealId: string;
+				userId: string;
+			})
+		);
 	};
 	useGetOrUpdateData(userId, null, getFavorites);
 	return (

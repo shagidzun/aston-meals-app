@@ -5,18 +5,17 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
-	List,
-	IconButton
+	List
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Favorite } from "@mui/icons-material";
 import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
+import { FavBtn } from "../fav-btn/FavBtn";
 
 interface ItemListProps {
 	data: { [key: string]: string }[];
 	page: "home" | "category" | "favorites";
 	favorites?: FavoriteItem[];
-	handleClick?: (meal: string, id: string) => void;
+	handleClick?: (meal: string | undefined, id: string | undefined) => void;
 }
 
 export const ItemList = ({
@@ -51,25 +50,11 @@ export const ItemList = ({
 					>
 						<ListItem>
 							{isCategoryPage && (
-								<IconButton
-									color={
-										favorites?.some(
-											favItem =>
-												favItem.mealId === item.idMeal &&
-												favItem.meal === item.strMeal
-										)
-											? "secondary"
-											: "primary"
-									}
-									onClick={e => {
-										e.preventDefault();
-										if (handleClick) {
-											handleClick(item.strMeal, item.idMeal);
-										}
-									}}
-								>
-									<Favorite />
-								</IconButton>
+								<FavBtn
+									item={item}
+									handleClick={handleClick}
+									favorites={favorites}
+								/>
 							)}
 							<ListItemAvatar>
 								<Avatar
