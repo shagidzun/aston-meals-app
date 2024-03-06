@@ -13,8 +13,6 @@ import { store } from "./app/store";
 import { getCurrentUser } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protectedRoutes/ProtectedRoute";
 
-const isAuth = store.getState().user?.isAuth;
-
 onAuthStateChanged(auth, user => {
 	if (user) {
 		store.dispatch(getCurrentUser(user.email, user.uid));
@@ -41,7 +39,7 @@ const router = createBrowserRouter([
 	{
 		path: "/signup",
 		element: (
-			<ProtectedRoute user={!isAuth}>
+			<ProtectedRoute>
 				<SignUp />
 			</ProtectedRoute>
 		)
@@ -49,7 +47,7 @@ const router = createBrowserRouter([
 	{
 		path: "/signin",
 		element: (
-			<ProtectedRoute user={!isAuth}>
+			<ProtectedRoute>
 				<SignIn />
 			</ProtectedRoute>
 		)
@@ -57,7 +55,7 @@ const router = createBrowserRouter([
 	{
 		path: "/history",
 		element: (
-			<ProtectedRoute user={isAuth}>
+			<ProtectedRoute>
 				<History />
 			</ProtectedRoute>
 		)
@@ -65,7 +63,7 @@ const router = createBrowserRouter([
 	{
 		path: "/favorites",
 		element: (
-			<ProtectedRoute user={isAuth}>
+			<ProtectedRoute>
 				<Favorites />
 			</ProtectedRoute>
 		)

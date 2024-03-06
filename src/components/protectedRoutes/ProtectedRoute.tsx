@@ -1,12 +1,14 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectIsAuth } from "../../features/user/userSlice";
 
 interface ProtectedRouteProps {
-	user: boolean;
 	children: ReactNode;
 }
-export const ProtectedRoute = ({ user, children }: ProtectedRouteProps) => {
-	if (!user) {
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+	const isAuth = useAppSelector(selectIsAuth);
+	if (!isAuth) {
 		return <Navigate to="/" replace />;
 	}
 	return children;
