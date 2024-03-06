@@ -5,14 +5,10 @@ import { selectIsAuth } from "../../features/user/userSlice";
 
 interface ProtectedRouteProps {
 	children: ReactNode;
-	isUserPage: boolean;
 }
-export const ProtectedRoute = ({
-	children,
-	isUserPage
-}: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 	const isAuth = useAppSelector(selectIsAuth);
-	if (!isAuth && isUserPage) {
+	if (!isAuth) {
 		return <Navigate to="/" replace />;
 	}
 	return children;
