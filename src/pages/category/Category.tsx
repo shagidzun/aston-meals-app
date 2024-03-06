@@ -29,12 +29,14 @@ import {
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
-import { selectId } from "../../features/user/userSlice";
+import { selectId, selectIsLoading } from "../../features/user/userSlice";
+import { ItemList } from "../../components/item-list/ItemList";
 
 export const Category = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
 	const favorites = useAppSelector(selectFavorites);
+	const isUserLoading = useAppSelector(selectIsLoading);
 	const { category: currentCategory } = useParams();
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
@@ -47,61 +49,42 @@ export const Category = () => {
 	};
 	useGetOrUpdateData(userId, null, getFavorites);
 	return (
-		<>
-			<Navigation />
-			<SearchField />
-			<Container maxWidth="sm">
-				{isLoading ? (
-					<LinearProgress />
-				) : isError ? (
-					<Typography variant="h5">Something went wrong :(</Typography>
-				) : (
-					<List sx={{ width: "100%", maxWidth: "sm" }}>
-						<ListItem sx={{ bgcolor: "lightblue" }}>
-							<ListItemAvatar>
-								<Avatar
-									src={matchedCategory?.strCategoryThumb}
-									alt={matchedCategory?.strCategory}
-								/>
-							</ListItemAvatar>
-							<ListItemText primary={matchedCategory?.strCategory} />
-						</ListItem>
-						{data?.meals.map((meal, i) => (
-							<Fragment key={meal.idMeal}>
-								{i !== 0 && <Divider component="li" />}
-								<Link to={`/meal/${meal.idMeal}`}>
-									<ListItem>
-										<IconButton
-											color={
-												favorites.some(
-													item =>
-														item.mealId === meal.idMeal &&
-														item.meal === meal.strMeal
-												)
-													? "secondary"
-													: "primary"
-											}
-											onClick={e => {
-												e.preventDefault();
-												handleUpdateFavorites(meal.strMeal, meal.idMeal);
-											}}
-										>
-											<Favorite />
-										</IconButton>
+		<Container>
+			{isUserLoading ? (
+				<LinearProgress />
+			) : (
+				<>
+					<Navigation />
+					<SearchField />
+					<Container maxWidth="sm">
+						{isLoading ? (
+							<LinearProgress />
+						) : isError ? (
+							<Typography variant="h5">Something went wrong :(</Typography>
+						) : (
+							<>
+								<List sx={{ width: "100%", maxWidth: "sm" }}>
+									<ListItem sx={{ bgcolor: "lightblue" }}>
 										<ListItemAvatar>
 											<Avatar
-												src={meal.strMealThumb + "/preview"}
-												alt={meal.strMeal}
+												src={matchedCategory?.strCategoryThumb}
+												alt={matchedCategory?.strCategory}
 											/>
 										</ListItemAvatar>
-										<ListItemText primary={meal.strMeal} />
+										<ListItemText primary={matchedCategory?.strCategory} />
 									</ListItem>
-								</Link>
-							</Fragment>
-						))}
-					</List>
-				)}
-			</Container>
-		</>
+								</List>
+								<ItemList
+									data={data?.meals as any[]}
+									handleClick={handleUpdateFavorites}
+									page="category"
+									favorites={favorites}
+								/>
+							</>
+						)}
+					</Container>
+				</>
+			)}
+		</Container>
 	);
 };
