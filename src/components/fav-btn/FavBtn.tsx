@@ -4,7 +4,11 @@ import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 
 interface FavBtnProps {
 	favorites?: FavoriteItem[];
-	handleClick?: (meal: string | undefined, id: string | undefined) => void;
+	handleClick?: (
+		meal: string | undefined,
+		id: string | undefined,
+		imgUrl: string | undefined
+	) => void;
 	item?: { [key: string]: string };
 }
 
@@ -14,7 +18,7 @@ export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
 			color={
 				favorites?.some(
 					favItem =>
-						favItem.mealId === item?.idMeal && favItem.meal === item?.strMeal
+						favItem.idMeal === item?.idMeal && favItem.strMeal === item?.strMeal
 				)
 					? "secondary"
 					: "primary"
@@ -22,7 +26,7 @@ export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
 			onClick={e => {
 				e.preventDefault();
 				if (handleClick) {
-					handleClick(item?.strMeal, item?.idMeal);
+					handleClick(item?.strMeal, item?.idMeal, item?.strMealThumb);
 				}
 			}}
 		>

@@ -1,16 +1,5 @@
 import Container from "@mui/material/Container";
-import {
-	Avatar,
-	Divider,
-	LinearProgress,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Typography
-} from "@mui/material";
-import { Link } from "react-router-dom";
-import { Fragment } from "react";
+import { LinearProgress, Typography } from "@mui/material";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealsCategoriesQuery } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
@@ -34,7 +23,7 @@ export const Home = () => {
 						) : isError || !data ? (
 							<Typography variant="h5">Something went wrong :(</Typography>
 						) : (
-							<ItemList data={data?.categories as any[]} page="home" />
+							<ItemList data={data?.categories as []} page="home" />
 						)}
 					</Container>
 				</>

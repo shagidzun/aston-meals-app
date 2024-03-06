@@ -15,7 +15,11 @@ interface ItemListProps {
 	data: { [key: string]: string }[];
 	page: "home" | "category" | "favorites";
 	favorites?: FavoriteItem[];
-	handleClick?: (meal: string | undefined, id: string | undefined) => void;
+	handleClick?: (
+		meal: string | undefined,
+		id: string | undefined,
+		imgUrl: string | undefined
+	) => void;
 }
 
 export const ItemList = ({
@@ -26,6 +30,7 @@ export const ItemList = ({
 }: ItemListProps) => {
 	const isHomePage = page === "home";
 	const isCategoryPage = page === "category";
+	const isFavoritesPage = page === "favorites";
 	return (
 		<List sx={{ width: "100%", maxWidth: "sm", padding: "0px" }}>
 			{data.map((item, i) => (
@@ -35,7 +40,7 @@ export const ItemList = ({
 							? item.idCategory
 							: isCategoryPage
 								? item.idMeal
-								: item.mealid
+								: item.mealId
 					}
 				>
 					{i !== 0 && <Divider component="li" />}
@@ -43,13 +48,11 @@ export const ItemList = ({
 						to={
 							isHomePage
 								? `/category/${item.strCategory}`
-								: isCategoryPage
-									? `/meal/${item.idMeal}`
-									: `/meal/${item.mealId}`
+								: `/meal/${item.idMeal}`
 						}
 					>
 						<ListItem>
-							{isCategoryPage && (
+							{(isCategoryPage || isFavoritesPage) && (
 								<FavBtn
 									item={item}
 									handleClick={handleClick}
@@ -58,23 +61,11 @@ export const ItemList = ({
 							)}
 							<ListItemAvatar>
 								<Avatar
-									src={
-										isHomePage
-											? item.strCategoryThumb
-											: isCategoryPage
-												? item.strMealThumb
-												: undefined
-									}
+									src={isHomePage ? item.strCategoryThumb : item.strMealThumb}
 								/>
 							</ListItemAvatar>
 							<ListItemText
-								primary={
-									isHomePage
-										? item.strCategory
-										: isCategoryPage
-											? item.strMeal
-											: item.meal
-								}
+								primary={isHomePage ? item.strCategory : item.strMeal}
 							/>
 						</ListItem>
 					</Link>

@@ -36,12 +36,14 @@ export const Meal = () => {
 	const measures = filterProps(meal, "strMeasure");
 	const handleUpdateFavorites = (
 		meal: string | undefined,
-		mealId: string | undefined
+		mealId: string | undefined,
+		imgUrl: string | undefined
 	) => {
 		dispatch(
-			updateFavorites({ meal, mealId, userId } as {
+			updateFavorites({ meal, mealId, imgUrl, userId } as {
 				meal: string;
 				mealId: string;
+				imgUrl: string;
 				userId: string;
 			})
 		);

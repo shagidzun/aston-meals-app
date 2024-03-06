@@ -11,8 +11,9 @@ import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
 
 export interface FavoriteItem {
-	meal: string | null;
-	mealId: string | null;
+	strMeal: string | null;
+	idMeal: string | null;
+	strMealThumb: string | null;
 }
 
 interface FavoritesSliceState {
@@ -37,19 +38,18 @@ export const favoritesSlice = createAppSlice({
 				try {
 					const userSnap = await getDoc(userRef);
 					if (userSnap.exists()) {
+						const fetchedFavorites: FavoriteItem[] = [];
 						const favoriteRef = collection(db, `users/${userId}/favorites`);
 						const favoriteSnap = await getDocs(favoriteRef);
 						favoriteSnap.forEach(doc => {
 							//.data() возращает свой встроенный тип, поэтому тут as
-							favorites = favorites.concat(doc.data() as FavoriteItem);
+							const fetchedItem = doc.data() as FavoriteItem;
+							fetchedFavorites.push(fetchedItem);
 						});
 						return {
-							favorites
+							favorites: fetchedFavorites
 						};
 					}
-					return {
-						favorites: []
-					};
 				} catch (err) {
 					console.error(err);
 				}
@@ -70,12 +70,14 @@ export const favoritesSlice = createAppSlice({
 		updateFavorites: create.asyncThunk(
 			async (
 				{
-					meal,
-					mealId,
+					strMeal,
+					idMeal,
+					strMealThumb,
 					userId
 				}: {
-					meal: string | null;
-					mealId: string | null;
+					strMeal: string | null;
+					idMeal: string | null;
+					strMealThumb: string | null;
 					userId: string | null;
 				},
 				{ getState }
@@ -88,35 +90,31 @@ export const favoritesSlice = createAppSlice({
 					if (userSnap.exists()) {
 						const favoriteItemRef = doc(
 							db,
-							`users/${userId}/favorites/${meal}`
+							`users/${userId}/favorites/${strMeal}`
 						);
-						const favoriteRef = collection(db, `users/${userId}/favorites`);
 						const favoriteItemSnap = await getDoc(favoriteItemRef);
-						//const favoriteSnap = await getDocs(favoriteRef);
-						// favoriteSnap.forEach(doc => {
-						// 	//.data() возращает свой встроенный тип, поэтому тут as
-						// 	[...favorites].push(doc.data() as FavoriteItem);
-						// });
 						if (favoriteItemSnap.exists()) {
 							await deleteDoc(favoriteItemRef);
 							favorites = favorites.filter(
-								item => item.meal !== meal && item.mealId !== mealId
+								item => item.strMeal !== strMeal && item.idMeal !== idMeal
 							);
 						} else {
-							//используется as, т.к. третий аргумент setDoc требует именно string
+							console.log(strMeal);
 							await setDoc(
-								doc(db, `users/${userId}/favorites`, meal as string),
+								//используется as, т.к. третий аргумент setDoc требует именно string
+								doc(db, `users/${userId}/favorites`, strMeal as string),
 								{
-									meal,
-									mealId
+									strMeal: strMeal,
+									idMeal: idMeal,
+									strMealThumb: strMealThumb
 								}
 							);
 							favorites = favorites.concat({
-								meal,
-								mealId
+								strMeal: strMeal,
+								idMeal: idMeal,
+								strMealThumb: strMealThumb
 							});
 						}
-						return { favorites };
 					}
 				} catch (err) {
 					console.error(err);

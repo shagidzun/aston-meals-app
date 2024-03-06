@@ -1,8 +1,6 @@
 import Container from "@mui/material/Container";
 import {
 	Avatar,
-	Divider,
-	IconButton,
 	LinearProgress,
 	List,
 	ListItem,
@@ -10,9 +8,7 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-import { Fragment } from "react";
-import { Favorite } from "@mui/icons-material";
+import { useParams } from "react-router-dom";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
 	useGetMealsByCategoryQuery,
@@ -45,13 +41,15 @@ export const Category = () => {
 		category => category.strCategory === currentCategory
 	);
 	const handleUpdateFavorites = (
-		meal: string | undefined,
-		mealId: string | undefined
+		strMeal: string | undefined,
+		idMeal: string | undefined,
+		strMealThumb: string | undefined
 	) => {
 		dispatch(
-			updateFavorites({ meal, mealId, userId } as {
-				meal: string;
-				mealId: string;
+			updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+				strMeal: string;
+				idMeal: string;
+				strMealThumb: string;
 				userId: string;
 			})
 		);
@@ -84,7 +82,7 @@ export const Category = () => {
 									</ListItem>
 								</List>
 								<ItemList
-									data={data?.meals as any[]}
+									data={data?.meals as []}
 									handleClick={handleUpdateFavorites}
 									page="category"
 									favorites={favorites}
