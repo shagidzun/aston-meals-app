@@ -34,15 +34,7 @@ export const ItemList = ({
 	return (
 		<List sx={{ width: "100%", maxWidth: "sm", padding: "0px" }}>
 			{data.map((item, i) => (
-				<Fragment
-					key={
-						isHomePage
-							? item.idCategory
-							: isCategoryPage
-								? item.idMeal
-								: item.mealId
-					}
-				>
+				<Fragment key={isHomePage ? item.idCategory : item.idMeal}>
 					{i !== 0 && <Divider component="li" />}
 					<Link
 						to={

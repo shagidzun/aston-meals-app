@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { Home } from "./pages/home/Home";
 import { Category } from "./pages/category/Category";
 import { Meal } from "./pages/meal/Meal";
@@ -8,20 +7,17 @@ import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
 import { History } from "./pages/history/History";
 import { Favorites } from "./pages/favorites/Favorites";
-import { auth, db } from "./firebase/firebase";
+import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
-import { getCurrentUser } from "./features/user/userSlice";
+import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
 import { Search } from "./pages/search/Search";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
 		store.dispatch(getCurrentUser(user.email, user.uid));
-		addDoc(collection(db, "user/CuwhQSc5eMhiDwB0M3bZXwf1DN03/favorites"), {
-			a: 1,
-			b: 2
-		});
 	}
+	store.dispatch(setLoadingOff());
 });
 
 const router = createBrowserRouter([

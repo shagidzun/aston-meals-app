@@ -1,5 +1,11 @@
 import Container from "@mui/material/Container";
-import { List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+	LinearProgress,
+	List,
+	ListItem,
+	ListItemText,
+	Typography
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
@@ -8,7 +14,11 @@ import {
 	useAppSelector,
 	useGetOrUpdateData
 } from "../../app/hooks";
-import { selectId, selectIsAuth } from "../../features/user/userSlice";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
 import {
 	getFavorites,
 	selectFavorites,
@@ -19,6 +29,7 @@ import { ItemList } from "../../components/item-list/ItemList";
 export const Favorites = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
+	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
 	const favorites = useAppSelector(selectFavorites);
 	const handleUpdateFavorites = (
@@ -38,29 +49,32 @@ export const Favorites = () => {
 	useGetOrUpdateData(userId, null, getFavorites);
 	return (
 		<>
-			<Navigation />
-			<SearchField />
-			<Container maxWidth="sm">
-				{isAuth && favorites ? (
-					<>
-						<List sx={{ width: "100%", maxWidth: "sm" }}>
-							<ListItem sx={{ bgcolor: "lightblue" }}>
-								<ListItemText primary="Favorites" />
-							</ListItem>
-						</List>
-						<ItemList
-							data={favorites as []}
-							page={"favorites"}
-							favorites={favorites}
-							handleClick={handleUpdateFavorites}
-						/>
-					</>
-				) : (
-					<Typography>
-						Only signed in users have history. <Link to="/signin">Sign in</Link>
-					</Typography>
-				)}
-			</Container>
+			{isUserLoading && <LinearProgress />}
+			{!isUserLoading && (
+				<>
+					<Navigation />
+					<SearchField />
+					<Container maxWidth="sm">
+						{isAuth && favorites.length > 0 ? (
+							<>
+								<List sx={{ width: "100%", maxWidth: "sm" }}>
+									<ListItem sx={{ bgcolor: "lightblue" }}>
+										<ListItemText primary="Favorites" />
+									</ListItem>
+								</List>
+								<ItemList
+									data={favorites as []}
+									page={"favorites"}
+									favorites={favorites}
+									handleClick={handleUpdateFavorites}
+								/>
+							</>
+						) : (
+							<Typography variant="h6">You have no favorite meals</Typography>
+						)}
+					</Container>
+				</>
+			)}
 		</>
 	);
 };

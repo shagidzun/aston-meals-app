@@ -99,7 +99,6 @@ export const favoritesSlice = createAppSlice({
 								item => item.strMeal !== strMeal && item.idMeal !== idMeal
 							);
 						} else {
-							console.log(strMeal);
 							await setDoc(
 								//используется as, т.к. третий аргумент setDoc требует именно string
 								doc(db, `users/${userId}/favorites`, strMeal as string),

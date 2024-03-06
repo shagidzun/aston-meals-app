@@ -124,7 +124,10 @@ export const userSlice = createAppSlice({
 				state.email = action.payload.email;
 				state.id = action.payload.id;
 			}
-		)
+		),
+		setLoadingOff: create.reducer(state => {
+			state.isLoading = false;
+		})
 	}),
 	selectors: {
 		selectIsAuth: user => user.isAuth,
@@ -134,7 +137,12 @@ export const userSlice = createAppSlice({
 	}
 });
 
-export const { userSignUp, userSignIn, userSignOut, getCurrentUser } =
-	userSlice.actions;
+export const {
+	userSignUp,
+	userSignIn,
+	userSignOut,
+	getCurrentUser,
+	setLoadingOff
+} = userSlice.actions;
 export const { selectIsLoading, selectIsAuth, selectId, selectEmail } =
 	userSlice.selectors;

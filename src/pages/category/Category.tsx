@@ -56,10 +56,9 @@ export const Category = () => {
 	};
 	useGetOrUpdateData(userId, null, getFavorites);
 	return (
-		<Container>
-			{isUserLoading ? (
-				<LinearProgress />
-			) : (
+		<>
+			{isUserLoading && <LinearProgress />}
+			{!isUserLoading && (
 				<>
 					<Navigation />
 					<SearchField />
@@ -92,6 +91,6 @@ export const Category = () => {
 					</Container>
 				</>
 			)}
-		</Container>
+		</>
 	);
 };

@@ -75,7 +75,6 @@ export const historySlice = createAppSlice({
 			},
 			{
 				fulfilled: (state, action) => {
-					console.log(action.payload.history);
 					state.history = action.payload.history;
 				},
 				rejected: state => {
