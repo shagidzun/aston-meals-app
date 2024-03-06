@@ -1,7 +1,6 @@
 import Container from "@mui/material/Container";
 import {
 	Box,
-	IconButton,
 	LinearProgress,
 	Stack,
 	Table,
@@ -35,15 +34,15 @@ export const Meal = () => {
 	const ingredients = filterProps(meal, "strIngredient");
 	const measures = filterProps(meal, "strMeasure");
 	const handleUpdateFavorites = (
-		meal: string | undefined,
-		mealId: string | undefined,
-		imgUrl: string | undefined
+		strMeal: string | undefined,
+		idMeal: string | undefined,
+		strMealThumb: string | undefined
 	) => {
 		dispatch(
-			updateFavorites({ meal, mealId, imgUrl, userId } as {
-				meal: string;
-				mealId: string;
-				imgUrl: string;
+			updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+				strMeal: string;
+				idMeal: string;
+				strMealThumb: string;
 				userId: string;
 			})
 		);
