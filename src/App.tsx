@@ -39,7 +39,7 @@ const router = createBrowserRouter([
 	{
 		path: "/signup",
 		element: (
-			<ProtectedRoute>
+			<ProtectedRoute isUserPage={false}>
 				<SignUp />
 			</ProtectedRoute>
 		)
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
 	{
 		path: "/signin",
 		element: (
-			<ProtectedRoute>
+			<ProtectedRoute isUserPage={false}>
 				<SignIn />
 			</ProtectedRoute>
 		)
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
 	{
 		path: "/history",
 		element: (
-			<ProtectedRoute>
+			<ProtectedRoute isUserPage={true}>
 				<History />
 			</ProtectedRoute>
 		)
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
 	{
 		path: "/favorites",
 		element: (
-			<ProtectedRoute>
+			<ProtectedRoute isUserPage={true}>
 				<Favorites />
 			</ProtectedRoute>
 		)
