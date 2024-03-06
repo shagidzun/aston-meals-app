@@ -1,6 +1,7 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
+import type { RootState } from "../../app/store";
 
 interface HistorySliceState {
 	history: string[];
@@ -14,25 +15,35 @@ export const historySlice = createAppSlice({
 	initialState,
 	reducers: create => ({
 		updateHistory: create.asyncThunk(
-			async ({
-				url,
-				userId
-			}: {
-				url: string | null;
-				userId: string | null;
-			}): Promise<HistorySliceState> => {
+			async (
+				{
+					url,
+					userId
+				}: {
+					url: string | null;
+					userId: string | null;
+				},
+				{ getState }
+			): Promise<HistorySliceState> => {
+				const state = getState() as RootState;
+				const history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					const history = userSnap.data().history;
-					history.push(url);
-					await updateDoc(userRef, {
-						history: history
-					});
-					return { history };
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						const fetchedHistory = userSnap.data().history;
+						fetchedHistory.push(url);
+						updateDoc(userRef, {
+							history: fetchedHistory
+						});
+						return { history: fetchedHistory };
+					}
+				} catch (err) {
+					console.error(err);
 				}
+
 				return {
-					history: []
+					history
 				};
 			},
 			{
@@ -43,15 +54,23 @@ export const historySlice = createAppSlice({
 			}
 		),
 		getHistory: create.asyncThunk(
-			async (userId: string | null): Promise<HistorySliceState> => {
+			async (
+				userId: string | null,
+				{ getState }
+			): Promise<HistorySliceState> => {
+				const state = getState() as RootState;
+				const history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					console.log("sssad");
-					return { history: userSnap.data().history };
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						return { history: userSnap.data().history };
+					}
+				} catch (err) {
+					console.error(err);
 				}
 				return {
-					history: []
+					history
 				};
 			},
 			{
