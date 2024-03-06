@@ -9,11 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
-import {
-	useAppDispatch,
-	useAppSelector,
-	useGetOrUpdateData
-} from "../../app/hooks";
+import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
 	selectId,
 	selectIsAuth,
@@ -46,7 +42,7 @@ export const Favorites = () => {
 			})
 		);
 	};
-	useGetOrUpdateData(userId, null, getFavorites);
+	useGetData(userId, getFavorites);
 	return (
 		<>
 			{isUserLoading && <LinearProgress />}

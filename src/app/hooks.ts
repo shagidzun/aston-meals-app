@@ -29,17 +29,15 @@ export const useDebounce = <T>(value: T, delay: number): T => {
 	return debouncedValue;
 };
 
-export const useGetOrUpdateData = <T>(
-	arg1: string | null,
-	arg2: string | null,
+export const useGetData = <T>(
+	arg: string | null,
 	action: AsyncThunk<T, any, any> //TODO: fix types if possible
 ): void => {
 	const dispatch = useAppDispatch();
 	const isAuth = useAppSelector(selectIsAuth);
 	useEffect(() => {
-		console.log(isAuth);
 		if (isAuth) {
-			dispatch(action(arg2 ? { arg1, arg2 } : arg1));
+			dispatch(action(arg));
 		}
-	}, [dispatch, action, arg1, arg2, isAuth]);
+	}, [dispatch, action, arg, isAuth]);
 };

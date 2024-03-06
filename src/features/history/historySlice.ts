@@ -20,7 +20,7 @@ export const historySlice = createAppSlice({
 					url,
 					userId
 				}: {
-					url: string | null;
+					url: string;
 					userId: string | null;
 				},
 				{ getState }
@@ -31,12 +31,18 @@ export const historySlice = createAppSlice({
 				try {
 					const userSnap = await getDoc(userRef);
 					if (userSnap.exists()) {
-						const fetchedHistory = userSnap.data().history;
-						fetchedHistory.push(url);
-						updateDoc(userRef, {
-							history: fetchedHistory
+						if (userSnap.data().history) {
+							const fetchedHistory = userSnap.data().history;
+							fetchedHistory.push(url);
+							await updateDoc(userRef, {
+								history: fetchedHistory
+							});
+							return { history: fetchedHistory };
+						}
+						await updateDoc(userRef, {
+							history: [url]
 						});
-						return { history: fetchedHistory };
+						return { history: [url] };
 					}
 				} catch (err) {
 					console.error(err);

@@ -4,11 +4,21 @@ import { useState } from "react";
 import Container from "@mui/material/Container";
 import { Form, Link, useNavigate } from "react-router-dom";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
-import { useDebounce } from "../../app/hooks";
+import { useAppDispatch, useAppSelector, useDebounce } from "../../app/hooks";
+import { updateHistory } from "../../features/history/historySlice";
+import { selectId } from "../../features/user/userSlice";
+
+// interface SearchFieldProps {
+// 	url?: string,
+// 	userId?: string
+// }
 
 export const SearchField = () => {
+	const dispatch = useAppDispatch();
 	const [searchTerm, setSearchTerm] = useState("");
 	const debouncedSearchTerm = useDebounce(searchTerm, 500);
+	const url = "/search/?q=" + searchTerm;
+	const userId = useAppSelector(selectId);
 	const { data, isLoading } = useGetMealByNameQuery(debouncedSearchTerm, {
 		skip: debouncedSearchTerm.trim() === ""
 	});
@@ -19,10 +29,11 @@ export const SearchField = () => {
 		value: string
 	): void => {
 		setSearchTerm(value);
-		setLoading(searchTerm !== debouncedSearchTerm); //TODO: fix loading state
+		setLoading(searchTerm !== debouncedSearchTerm);
 	};
 	const handleFormSubmit = (event: FormEvent) => {
 		event.preventDefault();
+		dispatch(updateHistory({ url, userId }));
 		navigate(`/search/?q=${searchTerm}`);
 	};
 	return (

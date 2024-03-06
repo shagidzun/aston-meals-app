@@ -11,7 +11,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Navigation } from "../../components/navigation/Navigation";
 import { SearchField } from "../../components/search/SearchField";
-import { useAppSelector, useGetOrUpdateData } from "../../app/hooks";
+import { useAppSelector, useGetData } from "../../app/hooks";
 import {
 	selectId,
 	selectIsAuth,
@@ -24,7 +24,7 @@ export const History = () => {
 	const isAuth = useAppSelector(selectIsAuth);
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const history = useAppSelector(selectHistory);
-	useGetOrUpdateData(userId, null, getHistory);
+	useGetData(userId, getHistory);
 	return (
 		<>
 			{isUserLoading && <LinearProgress />}

@@ -15,11 +15,7 @@ import {
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
-import {
-	useAppDispatch,
-	useAppSelector,
-	useGetOrUpdateData
-} from "../../app/hooks";
+import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
 	getFavorites,
 	selectFavorites,
@@ -54,7 +50,7 @@ export const Category = () => {
 			})
 		);
 	};
-	useGetOrUpdateData(userId, null, getFavorites);
+	useGetData(userId, getFavorites);
 	return (
 		<>
 			{isUserLoading && <LinearProgress />}
