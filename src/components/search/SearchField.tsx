@@ -47,7 +47,6 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 						<Autocomplete
 							freeSolo
 							value={searchTerm}
-							//defaultValue={q}
 							loading={
 								loading &&
 								debouncedSearchTerm.trim() !== "" &&
