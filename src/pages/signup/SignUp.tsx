@@ -6,6 +6,7 @@ import { Navigation } from "../../components/navigation/Navigation";
 import { Form } from "../../components/form/Form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+	selectError,
 	selectIsAuth,
 	selectIsLoading,
 	userSignUp
@@ -13,15 +14,14 @@ import {
 
 export const SignUp = () => {
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
+	const error = useAppSelector(selectError);
 	const handleSignUp = useCallback(
 		(email: string, password: string) => {
 			dispatch(userSignUp({ email, password }));
-			navigate("/");
 		},
-		[dispatch, navigate]
+		[dispatch]
 	);
 	return isUserLoading ? (
 		<LinearProgress />
@@ -29,7 +29,7 @@ export const SignUp = () => {
 		<>
 			<Navigation />
 			<Container maxWidth="sm">
-				<Form title={"Sign up"} handleSubmit={handleSignUp} />
+				<Form title={"Sign up"} handleSubmit={handleSignUp} error={error} />
 			</Container>
 		</>
 	) : (
