@@ -68,11 +68,11 @@ export const Search = () => {
 					<LinearProgress />
 				) : isError ? (
 					<Typography variant="h5">Something went wrong :(</Typography>
-				) : data?.meals === null ? (
+				) : data === null ? (
 					<Typography variant="h5">No meals found</Typography>
 				) : (
 					<ItemList
-						data={data?.meals as []}
+						data={data as []}
 						page={"search"}
 						favorites={favorites}
 						handleClick={handleUpdateFavorites}

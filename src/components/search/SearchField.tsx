@@ -48,13 +48,11 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 							freeSolo
 							value={searchTerm}
 							loading={
-								loading &&
-								debouncedSearchTerm.trim() !== "" &&
-								data?.meals !== null
+								loading && debouncedSearchTerm.trim() !== "" && data !== null
 							}
 							options={
-								data?.meals && debouncedSearchTerm.trim() !== ""
-									? data?.meals.map(meal => meal.strMeal)
+								data && debouncedSearchTerm.trim() !== ""
+									? data.map(meal => meal.strMeal)
 									: []
 							}
 							onInputChange={handleSearch}
@@ -63,9 +61,7 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 								<TextField {...params} label="Search meal" />
 							)}
 							renderOption={(props, option) => {
-								const matchedMeal = data?.meals.find(
-									meal => meal.strMeal === option
-								);
+								const matchedMeal = data?.find(meal => meal.strMeal === option);
 								return (
 									<li {...props}>
 										<Link

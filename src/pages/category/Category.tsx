@@ -40,7 +40,7 @@ export const Category = () => {
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
 		useGetMealsByCategoryQuery(currentCategory);
-	const matchedCategory = categoriesData?.categories.find(
+	const matchedCategory = categoriesData?.find(
 		category => category.strCategory === currentCategory
 	);
 	const handleUpdateFavorites = useCallback(
@@ -90,7 +90,7 @@ export const Category = () => {
 							</ListItem>
 						</List>
 						<ItemList
-							data={data?.meals as []}
+							data={data as []}
 							handleClick={handleUpdateFavorites}
 							page="category"
 							favorites={favorites}

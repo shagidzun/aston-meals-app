@@ -22,7 +22,7 @@ export const Home = () => {
 				) : isError || !data ? (
 					<Typography variant="h5">Something went wrong :(</Typography>
 				) : (
-					<ItemList data={data?.categories as []} page="home" />
+					<ItemList data={data as []} page="home" />
 				)}
 			</Container>
 		</>

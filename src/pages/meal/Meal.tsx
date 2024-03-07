@@ -28,7 +28,7 @@ export const Meal = () => {
 	const isAuth = useAppSelector(selectIsAuth);
 	const { id } = useParams();
 	const { data, isError, isLoading } = useGetMealByIdQuery(id);
-	const meal = data?.meals[0];
+	const meal = data?.[0];
 	const ingredients = filterProps(meal, "strIngredient");
 	const measures = filterProps(meal, "strMeasure");
 	const handleUpdateFavorites = useCallback(

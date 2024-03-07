@@ -1,9 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type {
-	MealsApiFullMealResponse,
-	MealsApiResponse,
-	MealsApiResponseCategories
-} from "../types/apiTypes";
+import type { Category, Meal, MealFull } from "../types/apiTypes";
 
 export const mealsApi = createApi({
 	baseQuery: fetchBaseQuery({
@@ -11,26 +7,24 @@ export const mealsApi = createApi({
 	}),
 	reducerPath: "mealsApi",
 	endpoints: build => ({
-		getMealsCategories: build.query<MealsApiResponseCategories, void>({
-			query: () => "categories.php"
+		getMealsCategories: build.query<Category[], void>({
+			query: () => "categories.php",
+			transformResponse: (response: { categories: Category[] }) =>
+				response.categories
 		}),
-		getMealsByCategory: build.query<
-			MealsApiResponse,
-			string | null | undefined
-		>({
-			query: category => `filter.php?c=${category}`
+		getMealsByCategory: build.query<Meal[], string | null | undefined>({
+			query: category => `filter.php?c=${category}`,
+			transformResponse: (response: { meals: Meal[] }) => response.meals
 		}),
-		getMealById: build.query<
-			MealsApiFullMealResponse,
-			string | null | undefined
-		>({
-			query: id => `/lookup.php?i=${id}`
+		getMealById: build.query<Partial<MealFull>[], string | null | undefined>({
+			query: id => `/lookup.php?i=${id}`,
+			transformResponse: (response: { meals: Partial<MealFull>[] }) =>
+				response.meals
 		}),
-		getMealByName: build.query<
-			MealsApiFullMealResponse,
-			string | null | undefined
-		>({
-			query: name => `/search.php?s=${name}`
+		getMealByName: build.query<Partial<MealFull>[], string | null | undefined>({
+			query: name => `/search.php?s=${name}`,
+			transformResponse: (response: { meals: Partial<MealFull>[] }) =>
+				response.meals
 		})
 	})
 });
