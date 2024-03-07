@@ -13,7 +13,7 @@ import { FavBtn } from "../fav-btn/FavBtn";
 
 interface ItemListProps {
 	data: { [key: string]: string }[];
-	page: "home" | "category" | "favorites";
+	page: "home" | "category" | "favorites" | "search";
 	favorites?: FavoriteItem[];
 	handleClick?: (
 		meal: string | undefined,
@@ -37,6 +37,7 @@ export const ItemList = ({
 				<Fragment key={isHomePage ? item.idCategory : item.idMeal}>
 					{i !== 0 && <Divider component="li" />}
 					<Link
+						style={{ textDecoration: "none", color: "inherit" }}
 						to={
 							isHomePage
 								? `/category/${item.strCategory}`
@@ -44,7 +45,7 @@ export const ItemList = ({
 						}
 					>
 						<ListItem>
-							{(isCategoryPage || isFavoritesPage) && (
+							{!isHomePage && (
 								<FavBtn
 									item={item}
 									handleClick={handleClick}

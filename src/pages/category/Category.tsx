@@ -8,7 +8,7 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
@@ -22,14 +22,20 @@ import {
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
-import { selectId, selectIsLoading } from "../../features/user/userSlice";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
 import { ItemList } from "../../components/item-list/ItemList";
 
 export const Category = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const userId = useAppSelector(selectId);
 	const favorites = useAppSelector(selectFavorites);
 	const isUserLoading = useAppSelector(selectIsLoading);
+	const isAuth = useAppSelector(selectIsAuth);
 	const { category: currentCategory } = useParams();
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
@@ -43,16 +49,20 @@ export const Category = () => {
 			idMeal: string | undefined,
 			strMealThumb: string | undefined
 		) => {
-			dispatch(
-				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-					strMeal: string;
-					idMeal: string;
-					strMealThumb: string;
-					userId: string;
-				})
-			);
+			if (isAuth) {
+				dispatch(
+					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+						strMeal: string;
+						idMeal: string;
+						strMealThumb: string;
+						userId: string;
+					})
+				);
+			} else {
+				navigate("/signin");
+			}
 		},
-		[dispatch, userId]
+		[dispatch, userId, isAuth, navigate]
 	);
 	useGetData(userId, getFavorites);
 	return isUserLoading ? (

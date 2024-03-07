@@ -15,6 +15,7 @@ import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
+		//здесь используется store, т.к. в верхнем уровне хуки использовать недопустимо
 		store.dispatch(getCurrentUser(user.email, user.uid));
 	}
 	store.dispatch(setLoadingOff());

@@ -55,6 +55,7 @@ export const userSlice = createAppSlice({
 						email: user.email,
 						id: user.uid
 					};
+					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
 					console.error(err);
 					return {
@@ -108,6 +109,7 @@ export const userSlice = createAppSlice({
 						email: user.email,
 						id: user.uid
 					};
+					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
 					console.error(err.message);
 					return {

@@ -11,7 +11,7 @@ import {
 	TableRow,
 	Typography
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
@@ -22,14 +22,20 @@ import {
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectId, selectIsLoading } from "../../features/user/userSlice";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
 import { FavBtn } from "../../components/fav-btn/FavBtn";
 
 export const Meal = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
+	const navigate = useNavigate();
 	const favorites = useAppSelector(selectFavorites);
 	const isUserLoading = useAppSelector(selectIsLoading);
+	const isAuth = useAppSelector(selectIsAuth);
 	const { id } = useParams();
 	const { data, isError, isLoading } = useGetMealByIdQuery(id);
 	const meal = data?.meals[0];
@@ -41,16 +47,20 @@ export const Meal = () => {
 			idMeal: string | undefined,
 			strMealThumb: string | undefined
 		) => {
-			dispatch(
-				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-					strMeal: string;
-					idMeal: string;
-					strMealThumb: string;
-					userId: string;
-				})
-			);
+			if (isAuth) {
+				dispatch(
+					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+						strMeal: string;
+						idMeal: string;
+						strMealThumb: string;
+						userId: string;
+					})
+				);
+			} else {
+				navigate("/signin");
+			}
 		},
-		[dispatch, userId]
+		[dispatch, userId, isAuth, navigate]
 	);
 	return isUserLoading ? (
 		<LinearProgress />

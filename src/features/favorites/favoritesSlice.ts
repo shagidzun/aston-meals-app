@@ -125,8 +125,7 @@ export const favoritesSlice = createAppSlice({
 			{
 				fulfilled: (state, action) => {
 					state.favorites = action.payload.favorites;
-				},
-				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
+				}
 			}
 		),
 		clearFavorites: create.reducer(state => {

@@ -82,10 +82,6 @@ export const historySlice = createAppSlice({
 			{
 				fulfilled: (state, action) => {
 					state.history = action.payload.history;
-				},
-				rejected: state => {
-					//TODO: придумать, что делать с ошибкой
-					console.error("Error");
 				}
 			}
 		),

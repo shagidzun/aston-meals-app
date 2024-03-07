@@ -43,7 +43,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 		}
 	};
 	return (
-		<Stack>
+		<Stack justifyContent="center" alignItems="center" sx={{ marginTop: 20 }}>
 			<Typography variant="h6">{title}</Typography>
 			<FormControl
 				sx={{ m: 1, width: "25ch" }}

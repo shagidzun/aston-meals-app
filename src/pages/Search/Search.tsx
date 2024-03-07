@@ -9,19 +9,54 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Fragment } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Fragment, useCallback } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
-import { useAppSelector } from "../../app/hooks";
-import { selectIsLoading } from "../../features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
+import { ItemList } from "../../components/item-list/ItemList";
+import {
+	selectFavorites,
+	updateFavorites
+} from "../../features/favorites/favoritesSlice";
 
 export const Search = () => {
 	const [searchParams] = useSearchParams();
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const isAuth = useAppSelector(selectIsAuth);
+	const userId = useAppSelector(selectId);
 	const q = searchParams.get("q");
 	const isUserLoading = useAppSelector(selectIsLoading);
+	const favorites = useAppSelector(selectFavorites);
 	const { data, isLoading, isError } = useGetMealByNameQuery(q);
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			if (isAuth) {
+				dispatch(
+					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+						strMeal: string;
+						idMeal: string;
+						strMealThumb: string;
+						userId: string;
+					})
+				);
+			} else {
+				navigate("/signin");
+			}
+		},
+		[dispatch, userId, isAuth, navigate]
+	);
 	return isUserLoading ? (
 		<LinearProgress />
 	) : (
@@ -36,24 +71,12 @@ export const Search = () => {
 				) : data?.meals === null ? (
 					<Typography variant="h5">No meals found</Typography>
 				) : (
-					<List sx={{ width: "100%", maxWidth: "sm" }}>
-						{data?.meals.map((meal, i) => (
-							<Fragment key={meal.idMeal}>
-								{i !== 0 && <Divider component="li" />}
-								<Link to={`/meal/${meal.idMeal}`}>
-									<ListItem>
-										<ListItemAvatar>
-											<Avatar
-												src={meal.strMealThumb + "/preview"}
-												alt={meal.strMeal}
-											/>
-										</ListItemAvatar>
-										<ListItemText primary={meal.strMeal} />
-									</ListItem>
-								</Link>
-							</Fragment>
-						))}
-					</List>
+					<ItemList
+						data={data?.meals as []}
+						page={"search"}
+						favorites={favorites}
+						handleClick={handleUpdateFavorites}
+					/>
 				)}
 			</Container>
 		</>
