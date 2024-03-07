@@ -18,7 +18,6 @@ import {
 	selectIsLoading
 } from "../../features/user/userSlice";
 import { getHistory, selectHistory } from "../../features/history/historySlice";
-//TODO: добавить состояние загрузки
 export const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);

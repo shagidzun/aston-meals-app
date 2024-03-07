@@ -12,6 +12,7 @@ import {
 	Typography
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
@@ -34,20 +35,23 @@ export const Meal = () => {
 	const meal = data?.meals[0];
 	const ingredients = filterProps(meal, "strIngredient");
 	const measures = filterProps(meal, "strMeasure");
-	const handleUpdateFavorites = (
-		strMeal: string | undefined,
-		idMeal: string | undefined,
-		strMealThumb: string | undefined
-	) => {
-		dispatch(
-			updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-				strMeal: string;
-				idMeal: string;
-				strMealThumb: string;
-				userId: string;
-			})
-		);
-	};
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			dispatch(
+				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+					strMeal: string;
+					idMeal: string;
+					strMealThumb: string;
+					userId: string;
+				})
+			);
+		},
+		[dispatch, userId]
+	);
 	return isUserLoading ? (
 		<LinearProgress />
 	) : (

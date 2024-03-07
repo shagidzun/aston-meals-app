@@ -6,6 +6,7 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
+import { useCallback } from "react";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
@@ -27,20 +28,23 @@ export const Favorites = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
 	const favorites = useAppSelector(selectFavorites);
-	const handleUpdateFavorites = (
-		strMeal: string | undefined,
-		idMeal: string | undefined,
-		strMealThumb: string | undefined
-	) => {
-		dispatch(
-			updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-				strMeal: string;
-				idMeal: string;
-				strMealThumb: string;
-				userId: string;
-			})
-		);
-	};
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			dispatch(
+				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+					strMeal: string;
+					idMeal: string;
+					strMealThumb: string;
+					userId: string;
+				})
+			);
+		},
+		[dispatch, userId]
+	);
 	useGetData(userId, getFavorites);
 	return isUserLoading ? (
 		<LinearProgress />

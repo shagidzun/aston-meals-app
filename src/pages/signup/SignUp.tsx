@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import { Navigate, useNavigate } from "react-router-dom";
 import { LinearProgress } from "@mui/material";
+import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import { Form } from "../../components/form/Form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -15,10 +16,13 @@ export const SignUp = () => {
 	const navigate = useNavigate();
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
-	const handleSignUp = (email: string, password: string) => {
-		dispatch(userSignUp({ email, password }));
-		navigate("/");
-	};
+	const handleSignUp = useCallback(
+		(email: string, password: string) => {
+			dispatch(userSignUp({ email, password }));
+			navigate("/");
+		},
+		[dispatch, navigate]
+	);
 	return isUserLoading ? (
 		<LinearProgress />
 	) : !isUserLoading && !isAuth ? (

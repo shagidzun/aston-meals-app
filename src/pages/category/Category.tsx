@@ -9,6 +9,7 @@ import {
 	Typography
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
 	useGetMealsByCategoryQuery,
@@ -36,20 +37,23 @@ export const Category = () => {
 	const matchedCategory = categoriesData?.categories.find(
 		category => category.strCategory === currentCategory
 	);
-	const handleUpdateFavorites = (
-		strMeal: string | undefined,
-		idMeal: string | undefined,
-		strMealThumb: string | undefined
-	) => {
-		dispatch(
-			updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-				strMeal: string;
-				idMeal: string;
-				strMealThumb: string;
-				userId: string;
-			})
-		);
-	};
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			dispatch(
+				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+					strMeal: string;
+					idMeal: string;
+					strMealThumb: string;
+					userId: string;
+				})
+			);
+		},
+		[dispatch, userId]
+	);
 	useGetData(userId, getFavorites);
 	return isUserLoading ? (
 		<LinearProgress />
