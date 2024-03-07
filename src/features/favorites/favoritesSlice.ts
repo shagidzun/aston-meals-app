@@ -60,10 +60,6 @@ export const favoritesSlice = createAppSlice({
 			{
 				fulfilled: (state, action) => {
 					state.favorites = action.payload.favorites;
-				},
-				rejected: state => {
-					//TODO: придумать, что делать с ошибкой
-					console.error("Error");
 				}
 			}
 		),

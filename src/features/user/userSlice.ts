@@ -57,7 +57,6 @@ export const userSlice = createAppSlice({
 					};
 					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
-					console.error(err);
 					return {
 						...initialState,
 						error: err.message
@@ -111,7 +110,6 @@ export const userSlice = createAppSlice({
 					};
 					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
-					console.error(err.message);
 					return {
 						...initialState,
 						error: err.message

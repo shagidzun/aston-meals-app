@@ -55,8 +55,7 @@ export const historySlice = createAppSlice({
 			{
 				fulfilled: (state, action) => {
 					state.history = action.payload.history;
-				},
-				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
+				}
 			}
 		),
 		getHistory: create.asyncThunk(

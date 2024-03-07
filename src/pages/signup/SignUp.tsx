@@ -1,5 +1,5 @@
 import Container from "@mui/material/Container";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { LinearProgress } from "@mui/material";
 import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
