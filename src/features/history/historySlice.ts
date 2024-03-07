@@ -44,8 +44,9 @@ export const historySlice = createAppSlice({
 						});
 						return { history: [url] };
 					}
-				} catch (err) {
-					console.error(err);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 
 				return {
@@ -71,8 +72,9 @@ export const historySlice = createAppSlice({
 					if (userSnap.exists()) {
 						return { history: userSnap.data().history };
 					}
-				} catch (err) {
-					console.error(err);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 				return {
 					history

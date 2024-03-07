@@ -50,8 +50,9 @@ export const favoritesSlice = createAppSlice({
 							favorites: fetchedFavorites
 						};
 					}
-				} catch (err) {
-					console.error(err);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 				return {
 					favorites
@@ -111,8 +112,9 @@ export const favoritesSlice = createAppSlice({
 							});
 						}
 					}
-				} catch (err) {
-					console.error(err);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 				return {
 					favorites
