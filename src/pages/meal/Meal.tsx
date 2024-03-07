@@ -1,16 +1,5 @@
 import Container from "@mui/material/Container";
-import {
-	Box,
-	LinearProgress,
-	Stack,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography
-} from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
@@ -28,6 +17,7 @@ import {
 	selectIsLoading
 } from "../../features/user/userSlice";
 import { FavBtn } from "../../components/fav-btn/FavBtn";
+import { Table } from "../../components/table/Table";
 
 export const Meal = () => {
 	const dispatch = useAppDispatch();
@@ -97,24 +87,7 @@ export const Meal = () => {
 									/>
 								</figcaption>
 							</figure>
-							<TableContainer>
-								<Table size="small">
-									<TableHead>
-										<TableRow>
-											<TableCell>Ingredients</TableCell>
-											<TableCell>Measure</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{ingredients.map((ingredient, i) => (
-											<TableRow key={i}>
-												<TableCell>{ingredient}</TableCell>
-												<TableCell>{measures[i]}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
+							<Table ingredients={ingredients} measures={measures} />
 						</Box>
 						<Box>
 							<Typography variant="h3" gutterBottom>
