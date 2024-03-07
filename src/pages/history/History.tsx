@@ -25,36 +25,33 @@ export const History = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const history = useAppSelector(selectHistory);
 	useGetData(userId, getHistory);
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
-			{isUserLoading && <LinearProgress />}
-			{!isUserLoading && (
-				<>
-					<Navigation />
-					<SearchField />
-					<Container maxWidth="sm">
-						{isAuth && history ? (
-							<List sx={{ width: "100%", maxWidth: "sm" }}>
-								<ListItem sx={{ bgcolor: "lightblue" }}>
-									<ListItemText primary="History" />
-								</ListItem>
-								{history.map((url, i) => (
-									<Fragment key={i}>
-										{i !== 0 && <Divider component="li" />}
-										<Link to={`${url}`}>
-											<ListItem>
-												<ListItemText primary={url} />
-											</ListItem>
-										</Link>
-									</Fragment>
-								))}
-							</List>
-						) : (
-							<Typography variant="h6">History is empty</Typography>
-						)}
-					</Container>
-				</>
-			)}
+			<Navigation />
+			<SearchField />
+			<Container maxWidth="sm">
+				{isAuth && history ? (
+					<List sx={{ width: "100%", maxWidth: "sm" }}>
+						<ListItem sx={{ bgcolor: "lightblue" }}>
+							<ListItemText primary="History" />
+						</ListItem>
+						{history.map((url, i) => (
+							<Fragment key={i}>
+								{i !== 0 && <Divider component="li" />}
+								<Link to={`${url}`}>
+									<ListItem>
+										<ListItemText primary={url} />
+									</ListItem>
+								</Link>
+							</Fragment>
+						))}
+					</List>
+				) : (
+					<Typography variant="h6">History is empty</Typography>
+				)}
+			</Container>
 		</>
 	);
 };

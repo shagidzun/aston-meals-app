@@ -10,24 +10,21 @@ import { ItemList } from "../../components/item-list/ItemList";
 export const Home = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const { data, isError, isLoading } = useGetMealsCategoriesQuery();
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
-			{isUserLoading && <LinearProgress />}
-			{!isUserLoading && (
-				<>
-					<Navigation />
-					<SearchField />
-					<Container maxWidth="sm">
-						{isLoading ? (
-							<LinearProgress />
-						) : isError || !data ? (
-							<Typography variant="h5">Something went wrong :(</Typography>
-						) : (
-							<ItemList data={data?.categories as []} page="home" />
-						)}
-					</Container>
-				</>
-			)}
+			<Navigation />
+			<SearchField />
+			<Container maxWidth="sm">
+				{isLoading ? (
+					<LinearProgress />
+				) : isError || !data ? (
+					<Typography variant="h5">Something went wrong :(</Typography>
+				) : (
+					<ItemList data={data?.categories as []} page="home" />
+				)}
+			</Container>
 		</>
 	);
 };

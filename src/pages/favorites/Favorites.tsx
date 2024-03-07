@@ -42,34 +42,31 @@ export const Favorites = () => {
 		);
 	};
 	useGetData(userId, getFavorites);
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
-			{isUserLoading && <LinearProgress />}
-			{!isUserLoading && (
-				<>
-					<Navigation />
-					<SearchField />
-					<Container maxWidth="sm">
-						{isAuth && favorites.length > 0 ? (
-							<>
-								<List sx={{ width: "100%", maxWidth: "sm" }}>
-									<ListItem sx={{ bgcolor: "lightblue" }}>
-										<ListItemText primary="Favorites" />
-									</ListItem>
-								</List>
-								<ItemList
-									data={favorites as []}
-									page={"favorites"}
-									favorites={favorites}
-									handleClick={handleUpdateFavorites}
-								/>
-							</>
-						) : (
-							<Typography variant="h6">You have no favorite meals</Typography>
-						)}
-					</Container>
-				</>
-			)}
+			<Navigation />
+			<SearchField />
+			<Container maxWidth="sm">
+				{isAuth && favorites.length > 0 ? (
+					<>
+						<List sx={{ width: "100%", maxWidth: "sm" }}>
+							<ListItem sx={{ bgcolor: "lightblue" }}>
+								<ListItemText primary="Favorites" />
+							</ListItem>
+						</List>
+						<ItemList
+							data={favorites as []}
+							page={"favorites"}
+							favorites={favorites}
+							handleClick={handleUpdateFavorites}
+						/>
+					</>
+				) : (
+					<Typography variant="h6">You have no favorite meals</Typography>
+				)}
+			</Container>
 		</>
 	);
 };

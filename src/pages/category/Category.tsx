@@ -51,42 +51,39 @@ export const Category = () => {
 		);
 	};
 	useGetData(userId, getFavorites);
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
-			{isUserLoading && <LinearProgress />}
-			{!isUserLoading && (
-				<>
-					<Navigation />
-					<SearchField />
-					<Container maxWidth="sm">
-						{isLoading ? (
-							<LinearProgress />
-						) : isError ? (
-							<Typography variant="h5">Something went wrong :(</Typography>
-						) : (
-							<>
-								<List sx={{ width: "100%", maxWidth: "sm" }}>
-									<ListItem sx={{ bgcolor: "lightblue" }}>
-										<ListItemAvatar>
-											<Avatar
-												src={matchedCategory?.strCategoryThumb}
-												alt={matchedCategory?.strCategory}
-											/>
-										</ListItemAvatar>
-										<ListItemText primary={matchedCategory?.strCategory} />
-									</ListItem>
-								</List>
-								<ItemList
-									data={data?.meals as []}
-									handleClick={handleUpdateFavorites}
-									page="category"
-									favorites={favorites}
-								/>
-							</>
-						)}
-					</Container>
-				</>
-			)}
+			<Navigation />
+			<SearchField />
+			<Container maxWidth="sm">
+				{isLoading ? (
+					<LinearProgress />
+				) : isError ? (
+					<Typography variant="h5">Something went wrong :(</Typography>
+				) : (
+					<>
+						<List sx={{ width: "100%", maxWidth: "sm" }}>
+							<ListItem sx={{ bgcolor: "lightblue" }}>
+								<ListItemAvatar>
+									<Avatar
+										src={matchedCategory?.strCategoryThumb}
+										alt={matchedCategory?.strCategory}
+									/>
+								</ListItemAvatar>
+								<ListItemText primary={matchedCategory?.strCategory} />
+							</ListItem>
+						</List>
+						<ItemList
+							data={data?.meals as []}
+							handleClick={handleUpdateFavorites}
+							page="category"
+							favorites={favorites}
+						/>
+					</>
+				)}
+			</Container>
 		</>
 	);
 };

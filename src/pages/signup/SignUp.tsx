@@ -19,19 +19,16 @@ export const SignUp = () => {
 		dispatch(userSignUp({ email, password }));
 		navigate("/");
 	};
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : !isUserLoading && !isAuth ? (
 		<>
-			{isUserLoading && <LinearProgress />}
-			{!isUserLoading && !isAuth ? (
-				<>
-					<Navigation />
-					<Container maxWidth="sm">
-						<Form title={"Sign in"} handleSubmit={handleSignUp} />
-					</Container>
-				</>
-			) : (
-				<Navigate to="/" />
-			)}
+			<Navigation />
+			<Container maxWidth="sm">
+				<Form title={"Sign up"} handleSubmit={handleSignUp} />
+			</Container>
 		</>
+	) : (
+		<Navigate to="/" />
 	);
 };
