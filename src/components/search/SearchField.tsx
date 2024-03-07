@@ -1,5 +1,6 @@
 import { Autocomplete, Button, Grid, TextField } from "@mui/material";
 import type { FormEvent, SyntheticEvent } from "react";
+import { useCallback } from "react";
 import { useState } from "react";
 import Container from "@mui/material/Container";
 import { Form, Link, useNavigate } from "react-router-dom";
@@ -14,27 +15,30 @@ interface SearchFieldProps {
 
 export const SearchField = ({ q }: SearchFieldProps) => {
 	const dispatch = useAppDispatch();
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchTerm, setSearchTerm] = useState(q ?? "");
 	const debouncedSearchTerm = useDebounce(searchTerm, 500);
-	const url = "/Search/?q=" + searchTerm;
+	const url = "/search/?q=" + searchTerm;
 	const userId = useAppSelector(selectId);
 	const { data, isLoading } = useGetMealByNameQuery(debouncedSearchTerm, {
 		skip: debouncedSearchTerm.trim() === ""
 	});
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(isLoading);
-	const handleSearch = (
-		_: SyntheticEvent<Element, Event>,
-		value: string
-	): void => {
-		setSearchTerm(value);
-		setLoading(searchTerm !== debouncedSearchTerm);
-	};
-	const handleFormSubmit = (event: FormEvent) => {
-		event.preventDefault();
-		dispatch(updateHistory({ url, userId }));
-		navigate(`/search/?q=${searchTerm}`);
-	};
+	const handleSearch = useCallback(
+		(_: SyntheticEvent<Element, Event>, value: string): void => {
+			setSearchTerm(value);
+			setLoading(searchTerm !== debouncedSearchTerm);
+		},
+		[searchTerm, debouncedSearchTerm]
+	);
+	const handleFormSubmit = useCallback(
+		(event: FormEvent) => {
+			event.preventDefault();
+			dispatch(updateHistory({ url, userId }));
+			navigate(`/search/?q=${searchTerm}`);
+		},
+		[dispatch, searchTerm, url, userId, navigate]
+	);
 	return (
 		<Container maxWidth="sm" sx={{ paddingTop: "20px" }}>
 			<Form onSubmit={handleFormSubmit}>
@@ -43,7 +47,7 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 						<Autocomplete
 							freeSolo
 							value={searchTerm}
-							defaultValue={q}
+							//defaultValue={q}
 							loading={
 								loading &&
 								debouncedSearchTerm.trim() !== "" &&
