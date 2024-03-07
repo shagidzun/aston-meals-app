@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import {
 	Button,
 	FormControl,
@@ -108,3 +109,9 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 		</Stack>
 	);
 };
+
+// Form.propTypes = {
+// 	title: PropTypes.oneOf(["Sign up", "Sign in"]).isRequired,
+// 	handleSubmit: PropTypes.func.isRequired,
+// 	error: PropTypes.string.isRequired
+// };

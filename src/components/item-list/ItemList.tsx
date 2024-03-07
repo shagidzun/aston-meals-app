@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import PropTypes from "prop-types";
 import {
 	Avatar,
 	Divider,
@@ -65,3 +66,16 @@ export const ItemList = ({
 		</List>
 	);
 };
+
+// ItemList.propTypes = {
+// 	data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+// 	page: PropTypes.oneOf(["home", "category", "favorites", "search"]),
+// 	favorites: PropTypes.arrayOf(
+// 		PropTypes.shape({
+// 			meal: PropTypes.string.isRequired,
+// 			id: PropTypes.string.isRequired,
+// 			imgUrl: PropTypes.string.isRequired
+// 		})
+// 	),
+// 	handleClick: PropTypes.func
+// };
