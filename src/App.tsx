@@ -13,6 +13,7 @@ import { store } from "./app/store";
 import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
 import { ThemeProvider } from "./context/context";
+import { ErrorBoundary } from "./pages/ErrorBoundary";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
@@ -25,27 +26,33 @@ onAuthStateChanged(auth, user => {
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Home />
+		element: <Home />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/category/:category",
-		element: <Category />
+		element: <Category />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/meal/:id",
-		element: <Meal />
+		element: <Meal />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/Search",
-		element: <Search />
+		element: <Search />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/signup",
-		element: <SignUp />
+		element: <SignUp />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/signin",
-		element: <SignIn />
+		element: <SignIn />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/history",
@@ -53,7 +60,8 @@ const router = createBrowserRouter([
 			<ProtectedRoute>
 				<History />
 			</ProtectedRoute>
-		)
+		),
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/favorites",
@@ -61,7 +69,8 @@ const router = createBrowserRouter([
 			<ProtectedRoute>
 				<Favorites />
 			</ProtectedRoute>
-		)
+		),
+		errorElement: <ErrorBoundary />
 	}
 ]);
 const App = () => {
