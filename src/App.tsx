@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { Home } from "./pages/home/Home";
 import { Category } from "./pages/category/Category";
 import { Meal } from "./pages/meal/Meal";
-import { Search } from "./pages/search/Search";
+import { Search } from "./pages/Search/Search";
 import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
 import { History } from "./pages/history/History";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
 		element: <Meal />
 	},
 	{
-		path: "/search",
+		path: "/Search",
 		element: <Search />
 	},
 	{

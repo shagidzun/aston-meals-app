@@ -16,7 +16,7 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 	const dispatch = useAppDispatch();
 	const [searchTerm, setSearchTerm] = useState("");
 	const debouncedSearchTerm = useDebounce(searchTerm, 500);
-	const url = "/search/?q=" + searchTerm;
+	const url = "/Search/?q=" + searchTerm;
 	const userId = useAppSelector(selectId);
 	const { data, isLoading } = useGetMealByNameQuery(debouncedSearchTerm, {
 		skip: debouncedSearchTerm.trim() === ""
