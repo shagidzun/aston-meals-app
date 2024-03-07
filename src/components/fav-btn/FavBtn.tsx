@@ -1,6 +1,7 @@
 import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
+import { useTheme } from "../../context/context";
 
 interface FavBtnProps {
 	favorites?: FavoriteItem[];
@@ -13,6 +14,9 @@ interface FavBtnProps {
 }
 
 export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
+	//@ts-ignore
+	const { theme } = useTheme();
+	//console.log(theme);
 	return (
 		<IconButton
 			color={
@@ -21,7 +25,7 @@ export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
 						favItem.idMeal === item?.idMeal && favItem.strMeal === item?.strMeal
 				)
 					? "secondary"
-					: "primary"
+					: theme
 			}
 			onClick={e => {
 				e.preventDefault();

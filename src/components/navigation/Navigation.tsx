@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Typography } from "@mui/material";
+import { AppBar, Box, Button, Switch, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -6,7 +6,9 @@ import {
 	selectIsAuth,
 	userSignOut
 } from "../../features/user/userSlice";
+import { useTheme } from "../../context/context";
 export const Navigation = () => {
+	const { theme, toggleTheme } = useTheme();
 	const isAuth = useAppSelector(selectIsAuth);
 	const email = useAppSelector(selectEmail);
 	const dispatch = useAppDispatch();
@@ -15,6 +17,7 @@ export const Navigation = () => {
 	};
 	return (
 		<AppBar
+			color={theme}
 			sx={{
 				height: 50,
 				display: "flex",
@@ -33,6 +36,11 @@ export const Navigation = () => {
 				<Link style={{ textDecoration: "none", color: "inherit" }} to={"/"}>
 					<Button sx={{ my: 2, color: "white", display: "block" }}>Home</Button>
 				</Link>
+				<Switch
+					color="warning"
+					onChange={toggleTheme}
+					checked={theme === "success"}
+				/>
 			</Box>
 			<Box
 				sx={{

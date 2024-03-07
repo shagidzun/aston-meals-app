@@ -12,6 +12,7 @@ import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
 import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
+import { ThemeProvider } from "./context/context";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
@@ -64,7 +65,11 @@ const router = createBrowserRouter([
 	}
 ]);
 const App = () => {
-	return <RouterProvider router={router} />;
+	return (
+		<ThemeProvider>
+			<RouterProvider router={router} />
+		</ThemeProvider>
+	);
 };
 
 export default App;
