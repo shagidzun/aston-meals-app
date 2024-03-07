@@ -16,6 +16,7 @@ export interface UserSliceState {
 	isAuth: boolean;
 	email: string | null;
 	id: string | null;
+	error?: string;
 }
 
 const initialState: UserSliceState = {
@@ -36,23 +37,31 @@ export const userSlice = createAppSlice({
 				email: string;
 				password: string;
 			}): Promise<UserSliceState> => {
-				const userCredential = await createUserWithEmailAndPassword(
-					auth,
-					email,
-					password
-				);
-				const user = userCredential.user;
-				const userRef = doc(db, "users", user.uid);
-				await setDoc(userRef, {
-					email: user.email,
-					id: user.uid
-				});
-				return {
-					isLoading: false,
-					isAuth: true,
-					email: user.email,
-					id: user.uid
-				};
+				try {
+					const userCredential = await createUserWithEmailAndPassword(
+						auth,
+						email,
+						password
+					);
+					const user = userCredential.user;
+					const userRef = doc(db, "users", user.uid);
+					await setDoc(userRef, {
+						email: user.email,
+						id: user.uid
+					});
+					return {
+						isLoading: false,
+						isAuth: true,
+						email: user.email,
+						id: user.uid
+					};
+				} catch (err: any) {
+					console.error(err);
+					return {
+						...initialState,
+						error: err.message
+					};
+				}
 			},
 			{
 				pending: state => {
@@ -63,6 +72,10 @@ export const userSlice = createAppSlice({
 					state.isAuth = action.payload.isAuth;
 					state.email = action.payload.email;
 					state.id = action.payload.id;
+					state.error = action.payload.error;
+				},
+				rejected: state => {
+					state.isLoading = false;
 				}
 			}
 		),
@@ -77,33 +90,45 @@ export const userSlice = createAppSlice({
 				},
 				thunkAPI
 			): Promise<UserSliceState> => {
-				const userCredential = await signInWithEmailAndPassword(
-					auth,
-					email,
-					password
-				);
-				//здесь as, т.к. в доке есть такая рекомендация при создании санков через create.asyncThunk
-				//подробнее тут: https://redux-toolkit.js.org/usage/usage-with-typescript#typing-async-thunks-inside-createslice
-				const dispatch = thunkAPI.dispatch as AppDispatch;
-				const user = userCredential.user;
-				dispatch(getFavorites(user.uid));
-				dispatch(getHistory(user.uid));
-				return {
-					isLoading: false,
-					isAuth: true,
-					email: user.email,
-					id: user.uid
-				};
+				try {
+					const userCredential = await signInWithEmailAndPassword(
+						auth,
+						email,
+						password
+					);
+					//здесь as, т.к. в доке есть такая рекомендация при создании санков через create.asyncThunk
+					//подробнее тут: https://redux-toolkit.js.org/usage/usage-with-typescript#typing-async-thunks-inside-createslice
+					const dispatch = thunkAPI.dispatch as AppDispatch;
+					const user = userCredential.user;
+					dispatch(getFavorites(user.uid));
+					dispatch(getHistory(user.uid));
+					return {
+						isLoading: false,
+						isAuth: true,
+						email: user.email,
+						id: user.uid
+					};
+				} catch (err: any) {
+					console.error(err.message);
+					return {
+						...initialState,
+						error: err.message
+					};
+				}
 			},
 			{
 				pending: state => {
 					state.isLoading = true;
 				},
 				fulfilled: (state, action) => {
-					state.isLoading = action.payload.isLoading;
+					state.isLoading = false;
 					state.isAuth = action.payload.isAuth;
 					state.email = action.payload.email;
 					state.id = action.payload.id;
+					state.error = action.payload.error;
+				},
+				rejected: state => {
+					state.isLoading = false;
 				}
 			}
 		),
@@ -133,7 +158,8 @@ export const userSlice = createAppSlice({
 		selectIsAuth: user => user.isAuth,
 		selectId: user => user.id,
 		selectEmail: user => user.email,
-		selectIsLoading: user => user.isLoading
+		selectIsLoading: user => user.isLoading,
+		selectError: user => user.error
 	}
 });
 
@@ -144,5 +170,10 @@ export const {
 	getCurrentUser,
 	setLoadingOff
 } = userSlice.actions;
-export const { selectIsLoading, selectIsAuth, selectId, selectEmail } =
-	userSlice.selectors;
+export const {
+	selectError,
+	selectIsLoading,
+	selectIsAuth,
+	selectId,
+	selectEmail
+} = userSlice.selectors;
