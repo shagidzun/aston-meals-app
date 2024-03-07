@@ -1,8 +1,6 @@
 import Container from "@mui/material/Container";
 import {
 	Avatar,
-	Divider,
-	IconButton,
 	LinearProgress,
 	List,
 	ListItem,
@@ -10,43 +8,66 @@ import {
 	ListItemText,
 	Typography
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-import { Fragment } from "react";
-import { Favorite } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import {
 	useGetMealsByCategoryQuery,
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
-import {
-	useAppDispatch,
-	useAppSelector,
-	useGetOrUpdateData
-} from "../../app/hooks";
+import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
 	getFavorites,
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
-import { selectId } from "../../features/user/userSlice";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
+import { ItemList } from "../../components/item-list/ItemList";
 
 export const Category = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const userId = useAppSelector(selectId);
 	const favorites = useAppSelector(selectFavorites);
+	const isUserLoading = useAppSelector(selectIsLoading);
+	const isAuth = useAppSelector(selectIsAuth);
 	const { category: currentCategory } = useParams();
 	const { data: categoriesData } = useGetMealsCategoriesQuery();
 	const { data, isError, isLoading } =
 		useGetMealsByCategoryQuery(currentCategory);
-	const matchedCategory = categoriesData?.categories.find(
+	const matchedCategory = categoriesData?.find(
 		category => category.strCategory === currentCategory
 	);
-	const handleUpdateFavorites = (meal: string, mealId: string) => {
-		dispatch(updateFavorites({ meal, mealId, userId }));
-	};
-	useGetOrUpdateData(userId, null, getFavorites);
-	return (
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			if (isAuth) {
+				dispatch(
+					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+						strMeal: string;
+						idMeal: string;
+						strMealThumb: string;
+						userId: string;
+					})
+				);
+			} else {
+				navigate("/signin");
+			}
+		},
+		[dispatch, userId, isAuth, navigate]
+	);
+	useGetData(userId, getFavorites);
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
 			<Navigation />
 			<SearchField />
@@ -56,50 +77,25 @@ export const Category = () => {
 				) : isError ? (
 					<Typography variant="h5">Something went wrong :(</Typography>
 				) : (
-					<List sx={{ width: "100%", maxWidth: "sm" }}>
-						<ListItem sx={{ bgcolor: "lightblue" }}>
-							<ListItemAvatar>
-								<Avatar
-									src={matchedCategory?.strCategoryThumb}
-									alt={matchedCategory?.strCategory}
-								/>
-							</ListItemAvatar>
-							<ListItemText primary={matchedCategory?.strCategory} />
-						</ListItem>
-						{data?.meals.map((meal, i) => (
-							<Fragment key={meal.idMeal}>
-								{i !== 0 && <Divider component="li" />}
-								<Link to={`/meal/${meal.idMeal}`}>
-									<ListItem>
-										<IconButton
-											color={
-												favorites.some(
-													item =>
-														item.mealId === meal.idMeal &&
-														item.meal === meal.strMeal
-												)
-													? "secondary"
-													: "primary"
-											}
-											onClick={e => {
-												e.preventDefault();
-												handleUpdateFavorites(meal.strMeal, meal.idMeal);
-											}}
-										>
-											<Favorite />
-										</IconButton>
-										<ListItemAvatar>
-											<Avatar
-												src={meal.strMealThumb + "/preview"}
-												alt={meal.strMeal}
-											/>
-										</ListItemAvatar>
-										<ListItemText primary={meal.strMeal} />
-									</ListItem>
-								</Link>
-							</Fragment>
-						))}
-					</List>
+					<>
+						<List sx={{ width: "100%", maxWidth: "sm" }}>
+							<ListItem sx={{ bgcolor: "lightblue" }}>
+								<ListItemAvatar>
+									<Avatar
+										src={matchedCategory?.strCategoryThumb}
+										alt={matchedCategory?.strCategory}
+									/>
+								</ListItemAvatar>
+								<ListItemText primary={matchedCategory?.strCategory} />
+							</ListItem>
+						</List>
+						<ItemList
+							data={data as []}
+							handleClick={handleUpdateFavorites}
+							page="category"
+							favorites={favorites}
+						/>
+					</>
 				)}
 			</Container>
 		</>

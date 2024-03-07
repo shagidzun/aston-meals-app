@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import {
 	Divider,
+	LinearProgress,
 	List,
 	ListItem,
 	ListItemText,
@@ -10,16 +11,22 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Navigation } from "../../components/navigation/Navigation";
 import { SearchField } from "../../components/search/SearchField";
-import { useAppSelector, useGetOrUpdateData } from "../../app/hooks";
-import { selectId, selectIsAuth } from "../../features/user/userSlice";
+import { useAppSelector, useGetData } from "../../app/hooks";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
 import { getHistory, selectHistory } from "../../features/history/historySlice";
-//TODO: добавить состояние загрузки
 export const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
+	const isUserLoading = useAppSelector(selectIsLoading);
 	const history = useAppSelector(selectHistory);
-	useGetOrUpdateData(userId, null, getHistory);
-	return (
+	useGetData(userId, getHistory);
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
 			<Navigation />
 			<SearchField />
@@ -41,9 +48,7 @@ export const History = () => {
 						))}
 					</List>
 				) : (
-					<Typography>
-						Only signed in users have history. <Link to="/signin">Sign in</Link>
-					</Typography>
+					<Typography variant="h6">History is empty</Typography>
 				)}
 			</Container>
 		</>

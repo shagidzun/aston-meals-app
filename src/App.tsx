@@ -10,50 +10,75 @@ import { History } from "./pages/history/History";
 import { Favorites } from "./pages/favorites/Favorites";
 import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
-import { getCurrentUser } from "./features/user/userSlice";
+import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
+import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
+import { ThemeProvider } from "./context/context";
+import { ErrorBoundary } from "./pages/ErrorBoundary";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
+		//здесь используется store, т.к. в верхнем уровне хуки использовать недопустимо
 		store.dispatch(getCurrentUser(user.email, user.uid));
 	}
+	store.dispatch(setLoadingOff());
 });
 
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Home />
+		element: <Home />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/category/:category",
-		element: <Category />
+		element: <Category />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/meal/:id",
-		element: <Meal />
+		element: <Meal />,
+		errorElement: <ErrorBoundary />
 	},
 	{
-		path: "/search",
-		element: <Search />
+		path: "/Search",
+		element: <Search />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/signup",
-		element: <SignUp />
+		element: <SignUp />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/signin",
-		element: <SignIn />
+		element: <SignIn />,
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/history",
-		element: <History />
+		element: (
+			<ProtectedRoute>
+				<History />
+			</ProtectedRoute>
+		),
+		errorElement: <ErrorBoundary />
 	},
 	{
 		path: "/favorites",
-		element: <Favorites />
+		element: (
+			<ProtectedRoute>
+				<Favorites />
+			</ProtectedRoute>
+		),
+		errorElement: <ErrorBoundary />
 	}
 ]);
 const App = () => {
-	return <RouterProvider router={router} />;
+	return (
+		<ThemeProvider>
+			<RouterProvider router={router} />
+		</ThemeProvider>
+	);
 };
 
 export default App;

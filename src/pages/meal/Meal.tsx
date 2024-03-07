@@ -1,19 +1,7 @@
 import Container from "@mui/material/Container";
-import {
-	Box,
-	IconButton,
-	LinearProgress,
-	Stack,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography
-} from "@mui/material";
-import { useParams } from "react-router-dom";
-import { Favorite } from "@mui/icons-material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
@@ -23,21 +11,50 @@ import {
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectId } from "../../features/user/userSlice";
+import {
+	selectId,
+	selectIsAuth,
+	selectIsLoading
+} from "../../features/user/userSlice";
+import { FavBtn } from "../../components/fav-btn/FavBtn";
+import { Table } from "../../components/table/Table";
 
 export const Meal = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
+	const navigate = useNavigate();
 	const favorites = useAppSelector(selectFavorites);
+	const isUserLoading = useAppSelector(selectIsLoading);
+	const isAuth = useAppSelector(selectIsAuth);
 	const { id } = useParams();
 	const { data, isError, isLoading } = useGetMealByIdQuery(id);
-	const meal = data?.meals[0];
+	const meal = data?.[0];
 	const ingredients = filterProps(meal, "strIngredient");
 	const measures = filterProps(meal, "strMeasure");
-	const handleUpdateFavorites = (meal: string, mealId: string) => {
-		dispatch(updateFavorites({ meal, mealId, userId }));
-	};
-	return (
+	const handleUpdateFavorites = useCallback(
+		(
+			strMeal: string | undefined,
+			idMeal: string | undefined,
+			strMealThumb: string | undefined
+		) => {
+			if (isAuth) {
+				dispatch(
+					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
+						strMeal: string;
+						idMeal: string;
+						strMealThumb: string;
+						userId: string;
+					})
+				);
+			} else {
+				navigate("/signin");
+			}
+		},
+		[dispatch, userId, isAuth, navigate]
+	);
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
 			<Navigation />
 			<SearchField />
@@ -63,47 +80,14 @@ export const Meal = () => {
 								/>
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
-									<IconButton
-										color={
-											favorites.some(
-												item =>
-													item.mealId === meal?.idMeal &&
-													item.meal === meal?.strMeal
-											)
-												? "secondary"
-												: "primary"
-										}
-										onClick={e => {
-											e.preventDefault();
-											handleUpdateFavorites(
-												//useQuery возращает "| undefined", поэтому тут as
-												meal?.strMeal as string,
-												meal?.idMeal as string
-											);
-										}}
-									>
-										<Favorite />
-									</IconButton>
+									<FavBtn
+										item={meal as {}}
+										handleClick={handleUpdateFavorites}
+										favorites={favorites}
+									/>
 								</figcaption>
 							</figure>
-							<TableContainer>
-								<Table size="small">
-									<TableHead>
-										<TableRow>
-											<TableCell>Ingredients</TableCell>
-											<TableCell>Measure</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{ingredients.map((ingredient, i) => (
-											<TableRow key={i}>
-												<TableCell>{ingredient}</TableCell>
-												<TableCell>{measures[i]}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
+							<Table ingredients={ingredients} measures={measures} />
 						</Box>
 						<Box>
 							<Typography variant="h3" gutterBottom>

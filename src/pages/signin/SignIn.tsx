@@ -1,23 +1,38 @@
 import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { LinearProgress } from "@mui/material";
+import { useCallback } from "react";
 import { Navigation } from "../../components/navigation/Navigation";
 import { Form } from "../../components/form/Form";
-import { useAppDispatch } from "../../app/hooks";
-import { userSignIn } from "../../features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+	selectError,
+	selectIsAuth,
+	selectIsLoading,
+	userSignIn
+} from "../../features/user/userSlice";
 
 export const SignIn = () => {
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const handleSignIn = (email: string, password: string) => {
-		dispatch(userSignIn({ email, password }));
-		navigate("/");
-	};
-	return (
+	const isAuth = useAppSelector(selectIsAuth);
+	const isUserLoading = useAppSelector(selectIsLoading);
+	const error = useAppSelector(selectError);
+	const handleSignIn = useCallback(
+		(email: string, password: string) => {
+			dispatch(userSignIn({ email, password }));
+		},
+		[dispatch]
+	);
+	return isUserLoading ? (
+		<LinearProgress />
+	) : !isUserLoading && !isAuth ? (
 		<>
 			<Navigation />
 			<Container maxWidth="sm">
-				<Form title={"Sign in"} handleSubmit={handleSignIn} />
+				<Form title={"Sign in"} handleSubmit={handleSignIn} error={error} />
 			</Container>
 		</>
+	) : (
+		<Navigate to="/" />
 	);
 };

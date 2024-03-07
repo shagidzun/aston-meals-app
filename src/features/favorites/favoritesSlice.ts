@@ -8,10 +8,12 @@ import {
 } from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
+import type { RootState } from "../../app/store";
 
 export interface FavoriteItem {
-	meal: string | null;
-	mealId: string | null;
+	strMeal: string | null;
+	idMeal: string | null;
+	strMealThumb: string | null;
 }
 
 interface FavoritesSliceState {
@@ -26,82 +28,102 @@ export const favoritesSlice = createAppSlice({
 	initialState,
 	reducers: create => ({
 		getFavorites: create.asyncThunk(
-			async (userId: string | null): Promise<FavoritesSliceState> => {
+			async (
+				userId: string | null,
+				{ getState }
+			): Promise<FavoritesSliceState> => {
+				const state = getState() as RootState;
+				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					const favorites: FavoriteItem[] = [];
-					const favoriteRef = collection(db, `users/${userId}/favorites`);
-					const favoriteSnap = await getDocs(favoriteRef);
-					favoriteSnap.forEach(doc => {
-						//.data() возращает свой встроенный тип, поэтому тут as
-						favorites.push(doc.data() as FavoriteItem);
-					});
-					return {
-						favorites
-					};
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						const fetchedFavorites: FavoriteItem[] = [];
+						const favoriteRef = collection(db, `users/${userId}/favorites`);
+						const favoriteSnap = await getDocs(favoriteRef);
+						favoriteSnap.forEach(doc => {
+							//.data() возращает свой встроенный тип, поэтому тут as
+							const fetchedItem = doc.data() as FavoriteItem;
+							fetchedFavorites.push(fetchedItem);
+						});
+						return {
+							favorites: fetchedFavorites
+						};
+					}
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 				return {
-					favorites: []
+					favorites
 				};
 			},
 			{
 				fulfilled: (state, action) => {
 					state.favorites = action.payload.favorites;
-				},
-				rejected: state => {
-					//TODO: придумать, что делать с ошибкой
-					console.error("Error");
 				}
 			}
 		),
 		updateFavorites: create.asyncThunk(
-			async ({
-				meal,
-				mealId,
-				userId
-			}: {
-				meal: string | null;
-				mealId: string | null;
-				userId: string | null;
-			}): Promise<FavoritesSliceState> => {
+			async (
+				{
+					strMeal,
+					idMeal,
+					strMealThumb,
+					userId
+				}: {
+					strMeal: string | null;
+					idMeal: string | null;
+					strMealThumb: string | null;
+					userId: string | null;
+				},
+				{ getState }
+			): Promise<FavoritesSliceState> => {
+				const state = getState() as RootState;
+				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					let favorites: FavoriteItem[] = [];
-					const favoriteItemRef = doc(db, `users/${userId}/favorites/${meal}`);
-					const favoriteRef = collection(db, `users/${userId}/favorites`);
-					const favoriteItemSnap = await getDoc(favoriteItemRef);
-					const favoriteSnap = await getDocs(favoriteRef);
-					favoriteSnap.forEach(doc => {
-						//.data() возращает свой встроенный тип, поэтому тут as
-						favorites.push(doc.data() as FavoriteItem);
-					});
-					if (favoriteItemSnap.exists()) {
-						await deleteDoc(favoriteItemRef);
-						favorites = favorites.filter(
-							item => item.meal !== meal && item.mealId !== mealId
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						const favoriteItemRef = doc(
+							db,
+							`users/${userId}/favorites/${strMeal}`
 						);
-					} else {
-						//используется as, т.к. третий аргумент setDoc требует именно string
-						await setDoc(doc(db, `users/${userId}/favorites`, meal as string), {
-							meal,
-							mealId
-						});
-						favorites.push({
-							meal,
-							mealId
-						});
+						const favoriteItemSnap = await getDoc(favoriteItemRef);
+						if (favoriteItemSnap.exists()) {
+							await deleteDoc(favoriteItemRef);
+							favorites = favorites.filter(
+								item => item.strMeal !== strMeal && item.idMeal !== idMeal
+							);
+						} else {
+							await setDoc(
+								//используется as, т.к. третий аргумент setDoc требует именно string
+								doc(db, `users/${userId}/favorites`, strMeal as string),
+								{
+									strMeal: strMeal,
+									idMeal: idMeal,
+									strMealThumb: strMealThumb
+								}
+							);
+							favorites = favorites.concat({
+								strMeal: strMeal,
+								idMeal: idMeal,
+								strMealThumb: strMealThumb
+							});
+						}
 					}
-					return { favorites };
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
-				return { favorites: [] };
+				return {
+					favorites
+				};
 			},
 			{
 				fulfilled: (state, action) => {
 					state.favorites = action.payload.favorites;
-				},
-				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
+				}
 			}
 		),
 		clearFavorites: create.reducer(state => {

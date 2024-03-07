@@ -1,6 +1,7 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
+import type { RootState } from "../../app/store";
 
 interface HistorySliceState {
 	history: string[];
@@ -14,54 +15,74 @@ export const historySlice = createAppSlice({
 	initialState,
 	reducers: create => ({
 		updateHistory: create.asyncThunk(
-			async ({
-				url,
-				userId
-			}: {
-				url: string | null;
-				userId: string | null;
-			}): Promise<HistorySliceState> => {
+			async (
+				{
+					url,
+					userId
+				}: {
+					url: string;
+					userId: string | null;
+				},
+				{ getState }
+			): Promise<HistorySliceState> => {
+				const state = getState() as RootState;
+				const history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					const history = userSnap.data().history;
-					history.push(url);
-					await updateDoc(userRef, {
-						history: history
-					});
-					return { history };
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						if (userSnap.data().history) {
+							const fetchedHistory = userSnap.data().history;
+							fetchedHistory.push(url);
+							await updateDoc(userRef, {
+								history: fetchedHistory
+							});
+							return { history: fetchedHistory };
+						}
+						await updateDoc(userRef, {
+							history: [url]
+						});
+						return { history: [url] };
+					}
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
+
 				return {
-					history: []
+					history
 				};
 			},
 			{
 				fulfilled: (state, action) => {
 					state.history = action.payload.history;
-				},
-				rejected: (state, action) => {} //TODO: придумать, что делать с ошибкой
+				}
 			}
 		),
 		getHistory: create.asyncThunk(
-			async (userId: string | null): Promise<HistorySliceState> => {
+			async (
+				userId: string | null,
+				{ getState }
+			): Promise<HistorySliceState> => {
+				const state = getState() as RootState;
+				const history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				const userSnap = await getDoc(userRef);
-				if (userSnap.exists()) {
-					console.log("sssad");
-					return { history: userSnap.data().history };
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						return { history: userSnap.data().history };
+					}
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 				return {
-					history: []
+					history
 				};
 			},
 			{
 				fulfilled: (state, action) => {
-					console.log(action.payload.history);
 					state.history = action.payload.history;
-				},
-				rejected: state => {
-					//TODO: придумать, что делать с ошибкой
-					console.error("Error");
 				}
 			}
 		),

@@ -1,56 +1,28 @@
 import Container from "@mui/material/Container";
-import {
-	Avatar,
-	Divider,
-	LinearProgress,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Typography
-} from "@mui/material";
-import { Link } from "react-router-dom";
-import { Fragment } from "react";
+import { LinearProgress, Typography } from "@mui/material";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealsCategoriesQuery } from "../../services/mealsApi";
 import { SearchField } from "../../components/search/SearchField";
+import { useAppSelector } from "../../app/hooks";
+import { selectIsLoading } from "../../features/user/userSlice";
+import { ItemList } from "../../components/item-list/ItemList";
 
 export const Home = () => {
+	const isUserLoading = useAppSelector(selectIsLoading);
 	const { data, isError, isLoading } = useGetMealsCategoriesQuery();
-	return (
+	return isUserLoading ? (
+		<LinearProgress />
+	) : (
 		<>
 			<Navigation />
 			<SearchField />
 			<Container maxWidth="sm">
 				{isLoading ? (
 					<LinearProgress />
-				) : isError ? (
+				) : isError || !data ? (
 					<Typography variant="h5">Something went wrong :(</Typography>
 				) : (
-					<List
-						sx={{
-							width: "100%",
-							maxWidth: "sm",
-							padding: "0px"
-						}}
-					>
-						{data?.categories.map((category, i) => (
-							<Fragment key={category.idCategory}>
-								{i !== 0 && <Divider component="li" />}
-								<Link to={`/category/${category.strCategory}`}>
-									<ListItem>
-										<ListItemAvatar>
-											<Avatar
-												src={category.strCategoryThumb}
-												alt={category.strCategory}
-											/>
-										</ListItemAvatar>
-										<ListItemText primary={category.strCategory} />
-									</ListItem>
-								</Link>
-							</Fragment>
-						))}
-					</List>
+					<ItemList data={data as []} page="home" />
 				)}
 			</Container>
 		</>
