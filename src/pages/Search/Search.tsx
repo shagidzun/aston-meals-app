@@ -10,7 +10,7 @@ import {
 	Typography
 } from "@mui/material";
 import { Fragment } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
@@ -20,7 +20,6 @@ import { selectIsLoading } from "../../features/user/userSlice";
 export const Search = () => {
 	const [searchParams] = useSearchParams();
 	const q = searchParams.get("q");
-	const location = useLocation();
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const { data, isLoading, isError } = useGetMealByNameQuery(q);
 	return (
@@ -29,7 +28,7 @@ export const Search = () => {
 			{!isUserLoading && (
 				<>
 					<Navigation />
-					<SearchField />
+					<SearchField q={q} />
 					<Container maxWidth="sm">
 						{isLoading ? (
 							<LinearProgress />
