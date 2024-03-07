@@ -29,8 +29,6 @@ export const ItemList = ({
 	handleClick
 }: ItemListProps) => {
 	const isHomePage = page === "home";
-	const isCategoryPage = page === "category";
-	const isFavoritesPage = page === "favorites";
 	return (
 		<List sx={{ width: "100%", maxWidth: "sm", padding: "0px" }}>
 			{data.map((item, i) => (
