@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { Home } from "./pages/home/Home";
 import { Category } from "./pages/category/Category";
 import { Meal } from "./pages/meal/Meal";
+import { Search } from "./pages/search/Search";
 import { SignUp } from "./pages/signup/SignUp";
 import { SignIn } from "./pages/signin/SignIn";
 import { History } from "./pages/history/History";
@@ -11,7 +12,6 @@ import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
 import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
-import { Search } from "./pages/search/Search";
 
 onAuthStateChanged(auth, user => {
 	if (user) {
