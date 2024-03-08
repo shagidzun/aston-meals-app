@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import {
 	Button,
@@ -32,7 +32,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 	) => {
 		event.preventDefault();
 	};
-	const handleClickSubmit = (): void => {
+	const handleClickSubmit = useCallback((): void => {
 		if (isValidEmail(email) && password.length >= 6) {
 			handleSubmit(email, password);
 		}
@@ -42,7 +42,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 		if (!isValidEmail(email)) {
 			setShowErrorEmail(true);
 		}
-	};
+	}, [email, password, handleSubmit]);
 	return (
 		<Stack justifyContent="center" alignItems="center" sx={{ marginTop: 20 }}>
 			<Typography variant="h6">{title}</Typography>
