@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
 import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import {
 	selectFavorites,
