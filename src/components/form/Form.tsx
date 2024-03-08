@@ -110,6 +110,10 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 	);
 };
 
+/*При использовании PropTypes возникает ошибка, связанная с самим пакетом и Vite
+(у некоторых людей возникает такая проблема и с другими пакетами). Пытался пофиксить,
+но общеизвестные методы не помогли, поэтому закомментил*/
+
 // Form.propTypes = {
 // 	title: PropTypes.oneOf(["Sign up", "Sign in"]).isRequired,
 // 	handleSubmit: PropTypes.func.isRequired,

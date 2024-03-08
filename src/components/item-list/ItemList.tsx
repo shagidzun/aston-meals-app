@@ -91,6 +91,10 @@ export const ItemList = ({
 	);
 };
 
+/*При использовании PropTypes возникает ошибка, связанная с самим пакетом и Vite
+(у некоторых людей возникает такая проблема и с другими пакетами). Пытался пофиксить,
+но общеизвестные методы не помогли, поэтому закомментил*/
+
 // ItemList.propTypes = {
 // 	data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 // 	page: PropTypes.oneOf(["home", "category", "favorites", "search"]),
