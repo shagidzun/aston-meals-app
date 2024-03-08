@@ -30,7 +30,7 @@ export const History = () => {
 			<Container maxWidth="sm">
 				{isHistoryLoading ? (
 					<LinearProgress />
-				) : isAuth && history.length > 0 ? (
+				) : isAuth && history?.length > 0 ? (
 					<HistoryList history={history} />
 				) : (
 					<Typography variant="h6">History is empty</Typography>
