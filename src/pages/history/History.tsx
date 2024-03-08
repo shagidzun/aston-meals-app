@@ -17,11 +17,17 @@ import {
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
-import { getHistory, selectHistory } from "../../features/history/historySlice";
+import {
+	getHistory,
+	selectHistory,
+	selectHistoryIsLoading
+} from "../../features/history/historySlice";
+import { HistoryList } from "../../components/HistoryList";
 export const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
 	const isUserLoading = useAppSelector(selectIsLoading);
+	const isHistoryLoading = useAppSelector(selectHistoryIsLoading);
 	const history = useAppSelector(selectHistory);
 	useGetData(userId, getHistory);
 	return isUserLoading ? (
@@ -31,22 +37,10 @@ export const History = () => {
 			<Navigation />
 			<SearchField />
 			<Container maxWidth="sm">
-				{isAuth && history ? (
-					<List sx={{ width: "100%", maxWidth: "sm" }}>
-						<ListItem sx={{ bgcolor: "lightblue" }}>
-							<ListItemText primary="History" />
-						</ListItem>
-						{history.map((url, i) => (
-							<Fragment key={i}>
-								{i !== 0 && <Divider component="li" />}
-								<Link to={`${url}`}>
-									<ListItem>
-										<ListItemText primary={url} />
-									</ListItem>
-								</Link>
-							</Fragment>
-						))}
-					</List>
+				{isHistoryLoading ? (
+					<LinearProgress />
+				) : isAuth && history.length > 0 ? (
+					<HistoryList history={history} />
 				) : (
 					<Typography variant="h6">History is empty</Typography>
 				)}

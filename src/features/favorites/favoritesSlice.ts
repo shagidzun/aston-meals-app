@@ -18,10 +18,12 @@ export interface FavoriteItem {
 
 interface FavoritesSliceState {
 	favorites: FavoriteItem[];
+	isLoading: boolean;
 }
 
 const initialState: FavoritesSliceState = {
-	favorites: []
+	favorites: [],
+	isLoading: false
 };
 export const favoritesSlice = createAppSlice({
 	name: "favorites",
@@ -47,6 +49,7 @@ export const favoritesSlice = createAppSlice({
 							fetchedFavorites.push(fetchedItem);
 						});
 						return {
+							...state.favorites,
 							favorites: fetchedFavorites
 						};
 					}
@@ -55,12 +58,20 @@ export const favoritesSlice = createAppSlice({
 					console.error(err.message);
 				}
 				return {
+					...state.favorites,
 					favorites
 				};
 			},
 			{
+				pending: state => {
+					state.isLoading = true;
+				},
 				fulfilled: (state, action) => {
 					state.favorites = action.payload.favorites;
+					state.isLoading = false;
+				},
+				rejected: state => {
+					state.isLoading = false;
 				}
 			}
 		),
@@ -117,6 +128,7 @@ export const favoritesSlice = createAppSlice({
 					console.error(err.message);
 				}
 				return {
+					...state.favorites,
 					favorites
 				};
 			},
@@ -131,10 +143,11 @@ export const favoritesSlice = createAppSlice({
 		})
 	}),
 	selectors: {
-		selectFavorites: state => state.favorites
+		selectFavorites: state => state.favorites,
+		selectFavIsLoading: state => state.isLoading
 	}
 });
 
 export const { getFavorites, updateFavorites, clearFavorites } =
 	favoritesSlice.actions;
-export const { selectFavorites } = favoritesSlice.selectors;
+export const { selectFavorites, selectFavIsLoading } = favoritesSlice.selectors;

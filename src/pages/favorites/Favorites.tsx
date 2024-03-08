@@ -17,6 +17,7 @@ import {
 } from "../../features/user/userSlice";
 import {
 	getFavorites,
+	selectFavIsLoading,
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
@@ -28,6 +29,7 @@ export const Favorites = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
 	const favorites = useAppSelector(selectFavorites);
+	const isFavLoading = useAppSelector(selectFavIsLoading);
 	const handleUpdateFavorites = useCallback(
 		(
 			strMeal: string | null | undefined,
@@ -53,7 +55,9 @@ export const Favorites = () => {
 			<Navigation />
 			<SearchField />
 			<Container maxWidth="sm">
-				{isAuth && favorites.length > 0 ? (
+				{isFavLoading ? (
+					<LinearProgress />
+				) : isAuth && favorites.length > 0 ? (
 					<>
 						<List sx={{ width: "100%", maxWidth: "sm" }}>
 							<ListItem sx={{ bgcolor: "lightblue" }}>

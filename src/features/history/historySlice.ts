@@ -5,10 +5,12 @@ import type { RootState } from "../../app/store";
 
 interface HistorySliceState {
 	history: string[];
+	isLoading: boolean;
 }
 
 const initialState: HistorySliceState = {
-	history: []
+	history: [],
+	isLoading: false
 };
 export const historySlice = createAppSlice({
 	name: "history",
@@ -37,21 +39,19 @@ export const historySlice = createAppSlice({
 							await updateDoc(userRef, {
 								history: fetchedHistory
 							});
-							return { history: fetchedHistory };
+							return { ...state.history, history: fetchedHistory };
 						}
 						await updateDoc(userRef, {
 							history: [url]
 						});
-						return { history: [url] };
+						return { ...state.history, history: [url] };
 					}
 					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
 					console.error(err.message);
 				}
 
-				return {
-					history
-				};
+				return { ...state.history, history };
 			},
 			{
 				fulfilled: (state, action) => {
@@ -70,19 +70,24 @@ export const historySlice = createAppSlice({
 				try {
 					const userSnap = await getDoc(userRef);
 					if (userSnap.exists()) {
-						return { history: userSnap.data().history };
+						return { ...state.history, history: userSnap.data().history };
 					}
 					//any т.к. сам ts советует давать any ошибке
 				} catch (err: any) {
 					console.error(err.message);
 				}
-				return {
-					history
-				};
+				return { ...state.history, history };
 			},
 			{
+				pending: state => {
+					state.isLoading = true;
+				},
 				fulfilled: (state, action) => {
 					state.history = action.payload.history;
+					state.isLoading = false;
+				},
+				rejected: state => {
+					state.isLoading = false;
 				}
 			}
 		),
@@ -91,9 +96,10 @@ export const historySlice = createAppSlice({
 		})
 	}),
 	selectors: {
-		selectHistory: state => state.history
+		selectHistory: state => state.history,
+		selectHistoryIsLoading: state => state.isLoading
 	}
 });
 
 export const { updateHistory, getHistory, clearHistory } = historySlice.actions;
-export const { selectHistory } = historySlice.selectors;
+export const { selectHistory, selectHistoryIsLoading } = historySlice.selectors;
