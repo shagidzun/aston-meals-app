@@ -7,7 +7,7 @@ import {
 	Typography
 } from "@mui/material";
 import { useCallback } from "react";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
@@ -17,22 +17,24 @@ import {
 } from "../../features/user/userSlice";
 import {
 	getFavorites,
+	selectFavIsLoading,
 	selectFavorites,
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
 import { ItemList } from "../../components/item-list/ItemList";
 
-export const Favorites = () => {
+const Favorites = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
 	const favorites = useAppSelector(selectFavorites);
+	const isFavLoading = useAppSelector(selectFavIsLoading);
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
 		) => {
 			dispatch(
 				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
@@ -53,7 +55,9 @@ export const Favorites = () => {
 			<Navigation />
 			<SearchField />
 			<Container maxWidth="sm">
-				{isAuth && favorites.length > 0 ? (
+				{isFavLoading ? (
+					<LinearProgress />
+				) : isAuth && favorites.length > 0 ? (
 					<>
 						<List sx={{ width: "100%", maxWidth: "sm" }}>
 							<ListItem sx={{ bgcolor: "lightblue" }}>
@@ -61,7 +65,7 @@ export const Favorites = () => {
 							</ListItem>
 						</List>
 						<ItemList
-							data={favorites as []}
+							data={favorites}
 							page={"favorites"}
 							favorites={favorites}
 							handleClick={handleUpdateFavorites}
@@ -74,3 +78,5 @@ export const Favorites = () => {
 		</>
 	);
 };
+
+export default Favorites;

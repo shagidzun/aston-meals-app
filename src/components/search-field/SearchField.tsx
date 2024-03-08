@@ -15,9 +15,9 @@ interface SearchFieldProps {
 
 export const SearchField = ({ q }: SearchFieldProps) => {
 	const dispatch = useAppDispatch();
-	const [searchTerm, setSearchTerm] = useState(q ?? "");
+	const [searchTerm, setSearchTerm] = useState<string>(q ?? "");
 	const debouncedSearchTerm = useDebounce(searchTerm, 500);
-	const url = "/search/?q=" + searchTerm;
+	const url = "/search/?q=" + encodeURIComponent(searchTerm);
 	const userId = useAppSelector(selectId);
 	const { data, isLoading } = useGetMealByNameQuery(debouncedSearchTerm, {
 		skip: debouncedSearchTerm.trim() === ""
@@ -32,7 +32,7 @@ export const SearchField = ({ q }: SearchFieldProps) => {
 		[searchTerm, debouncedSearchTerm]
 	);
 	const handleFormSubmit = useCallback(
-		(event: FormEvent) => {
+		(event: FormEvent): void => {
 			event.preventDefault();
 			dispatch(updateHistory({ url, userId }));
 			navigate(`/search/?q=${searchTerm}`);

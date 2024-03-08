@@ -12,13 +12,13 @@ import {
 	userSignIn
 } from "../../features/user/userSlice";
 
-export const SignIn = () => {
+const SignIn = () => {
 	const dispatch = useAppDispatch();
 	const isAuth = useAppSelector(selectIsAuth);
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const error = useAppSelector(selectError);
 	const handleSignIn = useCallback(
-		(email: string, password: string) => {
+		(email: string, password: string): void => {
 			dispatch(userSignIn({ email, password }));
 		},
 		[dispatch]
@@ -36,3 +36,5 @@ export const SignIn = () => {
 		<Navigate to="/" />
 	);
 };
+
+export default SignIn;

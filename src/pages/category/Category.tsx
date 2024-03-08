@@ -15,7 +15,7 @@ import {
 	useGetMealsByCategoryQuery,
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
 	getFavorites,
@@ -27,9 +27,10 @@ import {
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
+import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
 
-export const Category = () => {
+const Category = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const userId = useAppSelector(selectId);
@@ -45,9 +46,9 @@ export const Category = () => {
 	);
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
 		) => {
 			if (isAuth) {
 				dispatch(
@@ -90,7 +91,7 @@ export const Category = () => {
 							</ListItem>
 						</List>
 						<ItemList
-							data={data as []}
+							data={data as DataItem[]}
 							handleClick={handleUpdateFavorites}
 							page="category"
 							favorites={favorites}
@@ -101,3 +102,5 @@ export const Category = () => {
 		</>
 	);
 };
+
+export default Category;

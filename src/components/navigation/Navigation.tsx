@@ -1,5 +1,6 @@
 import { AppBar, Box, Button, Switch, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
 	selectEmail,
@@ -12,9 +13,9 @@ export const Navigation = () => {
 	const isAuth = useAppSelector(selectIsAuth);
 	const email = useAppSelector(selectEmail);
 	const dispatch = useAppDispatch();
-	const handleOnSignOut = () => {
+	const handleOnSignOut = useCallback((): void => {
 		dispatch(userSignOut());
-	};
+	}, [dispatch]);
 	return (
 		<AppBar
 			color={theme}

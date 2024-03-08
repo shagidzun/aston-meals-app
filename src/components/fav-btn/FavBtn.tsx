@@ -6,17 +6,15 @@ import { useTheme } from "../../context/context";
 interface FavBtnProps {
 	favorites?: FavoriteItem[];
 	handleClick?: (
-		meal: string | undefined,
-		id: string | undefined,
-		imgUrl: string | undefined
+		meal: string | null | undefined,
+		id: string | null | undefined,
+		imgUrl: string | null | undefined
 	) => void;
-	item?: { [key: string]: string };
+	item?: FavoriteItem;
 }
 
 export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
-	//@ts-ignore
 	const { theme } = useTheme();
-	//console.log(theme);
 	return (
 		<IconButton
 			color={
@@ -27,7 +25,7 @@ export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
 					? "secondary"
 					: theme
 			}
-			onClick={e => {
+			onClick={(e): void => {
 				e.preventDefault();
 				if (handleClick) {
 					handleClick(item?.strMeal, item?.idMeal, item?.strMealThumb);

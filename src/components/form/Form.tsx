@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import {
 	Button,
@@ -26,13 +26,13 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showErrorEmail, setShowErrorEmail] = useState<boolean>(false);
 	const [showErrorPass, setShowErrorPass] = useState<boolean>(false);
-	const handleClickShowPassword = () => setShowPassword(show => !show);
+	const handleClickShowPassword = (): void => setShowPassword(show => !show);
 	const handleMouseDownPassword = (
 		event: React.MouseEvent<HTMLButtonElement>
 	) => {
 		event.preventDefault();
 	};
-	const handleClickSubmit = () => {
+	const handleClickSubmit = useCallback((): void => {
 		if (isValidEmail(email) && password.length >= 6) {
 			handleSubmit(email, password);
 		}
@@ -42,7 +42,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 		if (!isValidEmail(email)) {
 			setShowErrorEmail(true);
 		}
-	};
+	}, [email, password, handleSubmit]);
 	return (
 		<Stack justifyContent="center" alignItems="center" sx={{ marginTop: 20 }}>
 			<Typography variant="h6">{title}</Typography>
@@ -57,7 +57,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 					type="email"
 					label="Email"
 					required
-					onChange={e => setEmail(e.target.value)}
+					onChange={(e): void => setEmail(e.target.value)}
 				/>
 				<FormHelperText>{showErrorEmail && "Invalid email"}</FormHelperText>
 			</FormControl>
@@ -72,7 +72,7 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 					required
 					type={showPassword ? "text" : "password"}
 					inputProps={{ minLength: 6 }}
-					onChange={e => setPassword(e.target.value)}
+					onChange={(e): void => setPassword(e.target.value)}
 					endAdornment={
 						<InputAdornment position="end">
 							<IconButton
@@ -109,6 +109,10 @@ export const Form = ({ title, handleSubmit, error }: FormProps) => {
 		</Stack>
 	);
 };
+
+/*При использовании PropTypes возникает ошибка, связанная с самим пакетом и Vite
+(у некоторых людей возникает такая проблема и с другими пакетами). Пытался пофиксить,
+но общеизвестные методы не помогли, поэтому закомментил*/
 
 // Form.propTypes = {
 // 	title: PropTypes.oneOf(["Sign up", "Sign in"]).isRequired,

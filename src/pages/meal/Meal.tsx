@@ -5,7 +5,8 @@ import { useCallback } from "react";
 import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
+import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import {
 	selectFavorites,
 	updateFavorites
@@ -19,7 +20,7 @@ import {
 import { FavBtn } from "../../components/fav-btn/FavBtn";
 import { Table } from "../../components/table/Table";
 
-export const Meal = () => {
+const Meal = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
 	const navigate = useNavigate();
@@ -33,10 +34,10 @@ export const Meal = () => {
 	const measures = filterProps(meal, "strMeasure");
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
-		) => {
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
+		): void => {
 			if (isAuth) {
 				dispatch(
 					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
@@ -81,7 +82,7 @@ export const Meal = () => {
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
 									<FavBtn
-										item={meal as {}}
+										item={meal as FavoriteItem}
 										handleClick={handleUpdateFavorites}
 										favorites={favorites}
 									/>
@@ -101,3 +102,5 @@ export const Meal = () => {
 		</>
 	);
 };
+
+export default Meal;
