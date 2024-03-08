@@ -33,7 +33,7 @@ export const Search = () => {
 			strMeal: string | null | undefined,
 			idMeal: string | null | undefined,
 			strMealThumb: string | null | undefined
-		) => {
+		): void => {
 			if (isAuth) {
 				dispatch(
 					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {

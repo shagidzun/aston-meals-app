@@ -12,7 +12,7 @@ export const Navigation = () => {
 	const isAuth = useAppSelector(selectIsAuth);
 	const email = useAppSelector(selectEmail);
 	const dispatch = useAppDispatch();
-	const handleOnSignOut = () => {
+	const handleOnSignOut = (): void => {
 		dispatch(userSignOut());
 	};
 	return (

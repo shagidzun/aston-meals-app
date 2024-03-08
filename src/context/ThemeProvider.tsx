@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo, useState } from "react";
-import type { Theme } from "../types/contextTypes";
+import type { ContextValue, Theme } from "../types/contextTypes";
 import { ThemeContext } from "./context";
 
 interface ThemeProviderProps {
@@ -11,17 +11,17 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 	const [theme, setTheme] = useState<Theme>(
 		storedTheme ? (storedTheme as Theme) : "primary"
 	);
-	const toggleTheme = useCallback(() => {
+	const toggleTheme = useCallback((): void => {
 		setTheme(theme === "primary" ? "success" : "primary");
 		localStorage.setItem("theme", theme);
 	}, [theme]);
 
-	useMemo(() => {
+	useMemo((): void => {
 		localStorage.setItem("theme", theme);
 	}, [theme]);
 
-	const contextValue = useMemo(
-		() => ({
+	const contextValue = useMemo<ContextValue>(
+		(): ContextValue => ({
 			theme,
 			toggleTheme
 		}),

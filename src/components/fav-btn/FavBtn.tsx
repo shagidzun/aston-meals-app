@@ -25,7 +25,7 @@ export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {
 					? "secondary"
 					: theme
 			}
-			onClick={e => {
+			onClick={(e): void => {
 				e.preventDefault();
 				if (handleClick) {
 					handleClick(item?.strMeal, item?.idMeal, item?.strMealThumb);

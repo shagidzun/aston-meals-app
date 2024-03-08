@@ -18,7 +18,7 @@ export const SignIn = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const error = useAppSelector(selectError);
 	const handleSignIn = useCallback(
-		(email: string, password: string) => {
+		(email: string, password: string): void => {
 			dispatch(userSignIn({ email, password }));
 		},
 		[dispatch]
