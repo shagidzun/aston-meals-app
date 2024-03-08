@@ -30,9 +30,9 @@ export const Favorites = () => {
 	const favorites = useAppSelector(selectFavorites);
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
 		) => {
 			dispatch(
 				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
@@ -61,7 +61,7 @@ export const Favorites = () => {
 							</ListItem>
 						</List>
 						<ItemList
-							data={favorites as []}
+							data={favorites}
 							page={"favorites"}
 							favorites={favorites}
 							handleClick={handleUpdateFavorites}

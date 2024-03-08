@@ -38,9 +38,9 @@ export const Search = () => {
 	const { data, isLoading, isError } = useGetMealByNameQuery(q);
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
 		) => {
 			if (isAuth) {
 				dispatch(

@@ -29,7 +29,7 @@ export const favoritesSlice = createAppSlice({
 	reducers: create => ({
 		getFavorites: create.asyncThunk(
 			async (
-				userId: string | null,
+				userId: string | null | undefined,
 				{ getState }
 			): Promise<FavoritesSliceState> => {
 				const state = getState() as RootState;

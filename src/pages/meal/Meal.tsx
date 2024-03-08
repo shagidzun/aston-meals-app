@@ -6,6 +6,7 @@ import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
 import { SearchField } from "../../components/search/SearchField";
+import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import {
 	selectFavorites,
 	updateFavorites
@@ -33,9 +34,9 @@ export const Meal = () => {
 	const measures = filterProps(meal, "strMeasure");
 	const handleUpdateFavorites = useCallback(
 		(
-			strMeal: string | undefined,
-			idMeal: string | undefined,
-			strMealThumb: string | undefined
+			strMeal: string | null | undefined,
+			idMeal: string | null | undefined,
+			strMealThumb: string | null | undefined
 		) => {
 			if (isAuth) {
 				dispatch(
@@ -81,7 +82,7 @@ export const Meal = () => {
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
 									<FavBtn
-										item={meal as {}}
+										item={meal as FavoriteItem}
 										handleClick={handleUpdateFavorites}
 										favorites={favorites}
 									/>
