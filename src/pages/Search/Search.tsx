@@ -18,7 +18,7 @@ import {
 	updateFavorites
 } from "../../features/favorites/favoritesSlice";
 
-export const Search = () => {
+const Search = () => {
 	const [searchParams] = useSearchParams();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
@@ -74,3 +74,5 @@ export const Search = () => {
 		</>
 	);
 };
+
+export default Search;

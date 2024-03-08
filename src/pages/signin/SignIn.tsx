@@ -12,7 +12,7 @@ import {
 	userSignIn
 } from "../../features/user/userSlice";
 
-export const SignIn = () => {
+const SignIn = () => {
 	const dispatch = useAppDispatch();
 	const isAuth = useAppSelector(selectIsAuth);
 	const isUserLoading = useAppSelector(selectIsLoading);
@@ -36,3 +36,5 @@ export const SignIn = () => {
 		<Navigate to="/" />
 	);
 };
+
+export default SignIn;

@@ -12,7 +12,7 @@ import {
 	userSignUp
 } from "../../features/user/userSlice";
 
-export const SignUp = () => {
+const SignUp = () => {
 	const dispatch = useAppDispatch();
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const isAuth = useAppSelector(selectIsAuth);
@@ -36,3 +36,5 @@ export const SignUp = () => {
 		<Navigate to="/" />
 	);
 };
+
+export default SignUp;

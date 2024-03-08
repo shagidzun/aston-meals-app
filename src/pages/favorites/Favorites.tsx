@@ -23,7 +23,7 @@ import {
 } from "../../features/favorites/favoritesSlice";
 import { ItemList } from "../../components/item-list/ItemList";
 
-export const Favorites = () => {
+const Favorites = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
 	const isUserLoading = useAppSelector(selectIsLoading);
@@ -78,3 +78,5 @@ export const Favorites = () => {
 		</>
 	);
 };
+
+export default Favorites;

@@ -8,7 +8,7 @@ import { selectIsLoading } from "../../features/user/userSlice";
 import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
 
-export const Home = () => {
+const Home = () => {
 	const isUserLoading = useAppSelector(selectIsLoading);
 	const { data, isError, isLoading } = useGetMealsCategoriesQuery();
 	return isUserLoading ? (
@@ -29,3 +29,5 @@ export const Home = () => {
 		</>
 	);
 };
+
+export default Home;

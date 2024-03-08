@@ -1,19 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { Home } from "./pages/home/Home";
-import { Category } from "./pages/category/Category";
-import { Meal } from "./pages/meal/Meal";
-import { Search } from "./pages/Search/Search";
-import { SignUp } from "./pages/signup/SignUp";
-import { SignIn } from "./pages/signin/SignIn";
-import { History } from "./pages/history/History";
-import { Favorites } from "./pages/favorites/Favorites";
+import { lazy, Suspense } from "react";
+import { LinearProgress } from "@mui/material";
 import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
 import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
 import { ThemeProvider } from "./context/ThemeProvider";
-import { ErrorBoundary } from "./pages/ErrorBoundary";
+
+const Home = lazy(() => import("./pages/home/Home"));
+const Category = lazy(() => import("./pages/category/Category"));
+const Meal = lazy(() => import("./pages/meal/Meal"));
+const Search = lazy(() => import("./pages/Search/Search"));
+const SignUp = lazy(() => import("./pages/signup/SignUp"));
+const SignIn = lazy(() => import("./pages/signin/SignIn"));
+const History = lazy(() => import("./pages/history/History"));
+const Favorites = lazy(() => import("./pages/favorites/Favorites"));
+const ErrorBoundary = lazy(
+	() => import("./pages/error-boundary/ErrorBoundary")
+);
 
 onAuthStateChanged(auth, user => {
 	if (user) {
@@ -76,7 +81,9 @@ const router = createBrowserRouter([
 const App = () => {
 	return (
 		<ThemeProvider>
-			<RouterProvider router={router} />
+			<Suspense fallback={<LinearProgress />}>
+				<RouterProvider router={router} />
+			</Suspense>
 		</ThemeProvider>
 	);
 };

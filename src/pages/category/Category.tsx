@@ -30,7 +30,7 @@ import {
 import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
 
-export const Category = () => {
+const Category = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const userId = useAppSelector(selectId);
@@ -102,3 +102,5 @@ export const Category = () => {
 		</>
 	);
 };
+
+export default Category;

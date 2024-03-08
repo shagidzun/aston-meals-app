@@ -14,7 +14,8 @@ import {
 	selectHistoryIsLoading
 } from "../../features/history/historySlice";
 import { HistoryList } from "../../components/HistoryList";
-export const History = () => {
+
+const History = () => {
 	const userId = useAppSelector(selectId);
 	const isAuth = useAppSelector(selectIsAuth);
 	const isUserLoading = useAppSelector(selectIsLoading);
@@ -39,3 +40,5 @@ export const History = () => {
 		</>
 	);
 };
+
+export default History;

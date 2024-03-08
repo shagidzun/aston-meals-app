@@ -20,7 +20,7 @@ import {
 import { FavBtn } from "../../components/fav-btn/FavBtn";
 import { Table } from "../../components/table/Table";
 
-export const Meal = () => {
+const Meal = () => {
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectId);
 	const navigate = useNavigate();
@@ -102,3 +102,5 @@ export const Meal = () => {
 		</>
 	);
 };
+
+export default Meal;
