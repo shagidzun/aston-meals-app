@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import { LinearProgress, Typography } from "@mui/material";
 import { useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

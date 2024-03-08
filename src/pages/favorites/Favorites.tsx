@@ -7,7 +7,7 @@ import {
 	Typography
 } from "@mui/material";
 import { useCallback } from "react";
-import { SearchField } from "../../components/search/SearchField";
+import { SearchField } from "../../components/search-field/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
