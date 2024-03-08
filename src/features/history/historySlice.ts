@@ -28,27 +28,43 @@ export const historySlice = createAppSlice({
 				{ getState }
 			): Promise<HistorySliceState> => {
 				const state = getState() as RootState;
-				const history = state.history.history;
+				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				try {
-					const userSnap = await getDoc(userRef);
-					if (userSnap.exists()) {
-						if (userSnap.data().history) {
-							const fetchedHistory = userSnap.data().history;
-							fetchedHistory.push(url);
-							await updateDoc(userRef, {
-								history: fetchedHistory
-							});
-							return { ...state.history, history: fetchedHistory };
+				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+					try {
+						const userSnap = await getDoc(userRef);
+						if (userSnap.exists()) {
+							if (userSnap.data().history) {
+								const fetchedHistory = userSnap.data().history;
+								fetchedHistory.push(url);
+								await updateDoc(userRef, {
+									history: fetchedHistory
+								});
+								history = fetchedHistory;
+							} else {
+								await updateDoc(userRef, {
+									history: [url]
+								});
+								history = [url];
+							}
 						}
-						await updateDoc(userRef, {
-							history: [url]
-						});
-						return { ...state.history, history: [url] };
+						//any т.к. сам ts советует давать any ошибке
+					} catch (err: any) {
+						console.error(err.message);
 					}
-					//any т.к. сам ts советует давать any ошибке
-				} catch (err: any) {
-					console.error(err.message);
+				} else {
+					const userStr = localStorage.getItem(`${userId}`);
+					if (userStr) {
+						const historyLS = JSON.parse(userStr).history as string[];
+						history = historyLS ? historyLS.concat(url) : [url];
+					}
+					localStorage.setItem(
+						`${userId}`,
+						JSON.stringify({
+							history,
+							favorites: state.favorites.favorites
+						})
+					);
 				}
 
 				return { ...state.history, history };
@@ -65,16 +81,24 @@ export const historySlice = createAppSlice({
 				{ getState }
 			): Promise<HistorySliceState> => {
 				const state = getState() as RootState;
-				const history = state.history.history;
+				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				try {
-					const userSnap = await getDoc(userRef);
-					if (userSnap.exists()) {
-						return { ...state.history, history: userSnap.data().history };
+				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+					try {
+						const userSnap = await getDoc(userRef);
+						if (userSnap.exists()) {
+							return { ...state.history, history: userSnap.data().history };
+						}
+						//any т.к. сам ts советует давать any ошибке
+					} catch (err: any) {
+						console.error(err.message);
 					}
-					//any т.к. сам ts советует давать any ошибке
-				} catch (err: any) {
-					console.error(err.message);
+				} else {
+					const userStr = localStorage.getItem(`${userId}`);
+					if (userStr) {
+						const historyLS = JSON.parse(userStr).history as string[];
+						history = historyLS ? historyLS : history;
+					}
 				}
 				return { ...state.history, history };
 			},
