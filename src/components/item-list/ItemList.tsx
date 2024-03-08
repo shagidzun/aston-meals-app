@@ -13,7 +13,7 @@ import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import { FavBtn } from "../fav-btn/FavBtn";
 import type { Category } from "../../types/apiTypes";
 
-type DataItem = FavoriteItem | Category;
+export type DataItem = FavoriteItem | Category;
 
 interface ItemListProps {
 	data: DataItem[];

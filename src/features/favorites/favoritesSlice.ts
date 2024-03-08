@@ -107,15 +107,11 @@ export const favoritesSlice = createAppSlice({
 								item => item.strMeal !== strMeal && item.idMeal !== idMeal
 							);
 						} else {
-							await setDoc(
-								//используется as, т.к. третий аргумент setDoc требует именно string
-								doc(db, `users/${userId}/favorites`, strMeal as string),
-								{
-									strMeal: strMeal,
-									idMeal: idMeal,
-									strMealThumb: strMealThumb
-								}
-							);
+							await setDoc(doc(db, `users/${userId}/favorites/${strMeal}`), {
+								strMeal: strMeal,
+								idMeal: idMeal,
+								strMealThumb: strMealThumb
+							});
 							favorites = favorites.concat({
 								strMeal: strMeal,
 								idMeal: idMeal,

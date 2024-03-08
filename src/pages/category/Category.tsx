@@ -27,6 +27,7 @@ import {
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
+import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
 
 export const Category = () => {
@@ -90,7 +91,7 @@ export const Category = () => {
 							</ListItem>
 						</List>
 						<ItemList
-							data={data as []}
+							data={data as DataItem[]}
 							handleClick={handleUpdateFavorites}
 							page="category"
 							favorites={favorites}

@@ -31,7 +31,7 @@ export const useDebounce = <T>(value: T, delay: number): T => {
 
 export const useGetData = <T>(
 	arg: string | null,
-	action: AsyncThunk<T, any, any> //TODO: fix types if possible
+	action: AsyncThunk<T, any, any> //взять нужные типы не получилось, поэтому any
 ): void => {
 	const dispatch = useAppDispatch();
 	const isAuth = useAppSelector(selectIsAuth);

@@ -1,16 +1,7 @@
 import Container from "@mui/material/Container";
-import {
-	Avatar,
-	Divider,
-	LinearProgress,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Typography
-} from "@mui/material";
-import { Fragment, useCallback } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { LinearProgress, Typography } from "@mui/material";
+import { useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SearchField } from "../../components/search/SearchField";
 import { Navigation } from "../../components/navigation/Navigation";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
@@ -20,6 +11,7 @@ import {
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
+import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
 import {
 	selectFavorites,
@@ -72,7 +64,7 @@ export const Search = () => {
 					<Typography variant="h5">No meals found</Typography>
 				) : (
 					<ItemList
-						data={data as []}
+						data={data as DataItem[]}
 						page={"search"}
 						favorites={favorites}
 						handleClick={handleUpdateFavorites}
