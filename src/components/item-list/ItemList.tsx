@@ -97,7 +97,7 @@ export const ItemList = ({
 
 // ItemList.propTypes = {
 // 	data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
-// 	page: PropTypes.oneOf(["home", "category", "favorites", "search-field"]),
+// 	page: PropTypes.oneOf(["home", "category", "favorites", "search"]),
 // 	favorites: PropTypes.arrayOf(
 // 		PropTypes.shape({
 // 			meal: PropTypes.string.isRequired,

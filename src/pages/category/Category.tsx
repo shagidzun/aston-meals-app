@@ -15,7 +15,7 @@ import {
 	useGetMealsByCategoryQuery,
 	useGetMealsCategoriesQuery
 } from "../../services/mealsApi";
-import { SearchField } from "../../components/search-field/SearchField";
+import { SearchField } from "../../components/search/SearchField";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
 import {
 	getFavorites,

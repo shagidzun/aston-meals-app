@@ -1,7 +1,7 @@
 import Container from "@mui/material/Container";
 import { LinearProgress, Typography } from "@mui/material";
 import { Navigation } from "../../components/navigation/Navigation";
-import { SearchField } from "../../components/search-field/SearchField";
+import { SearchField } from "../../components/search/SearchField";
 import { useAppSelector, useGetData } from "../../app/hooks";
 import {
 	selectId,
