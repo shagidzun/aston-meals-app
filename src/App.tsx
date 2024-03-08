@@ -12,7 +12,7 @@ import { auth } from "./firebase/firebase";
 import { store } from "./app/store";
 import { getCurrentUser, setLoadingOff } from "./features/user/userSlice";
 import { ProtectedRoute } from "./components/protected-routes/ProtectedRoute";
-import { ThemeProvider } from "./context/context";
+import { ThemeProvider } from "./context/ThemeProvider";
 import { ErrorBoundary } from "./pages/ErrorBoundary";
 
 onAuthStateChanged(auth, user => {
