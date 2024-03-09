@@ -7,21 +7,25 @@ import {
 	getFavorites
 } from "../features/favorites/favoritesSlice";
 import { auth } from "../firebase/firebase";
-import type { RootState } from "../app/store";
+import type { AppDispatch, RootState } from "../app/store";
 
 export const listenerMiddleware = createListenerMiddleware();
 
-listenerMiddleware.startListening({
+const startAppListening = listenerMiddleware.startListening.withTypes<
+	RootState,
+	AppDispatch
+>();
+
+startAppListening({
 	actionCreator: getCurrentUser,
 	effect: (_, { dispatch, getState }) => {
-		//используется as т.к. тип не передается автоматически
-		const state = getState() as RootState;
+		const state = getState();
 		dispatch(getHistory(state.user.id));
 		dispatch(getFavorites(state.user.id));
 	}
 });
 
-listenerMiddleware.startListening({
+startAppListening({
 	actionCreator: userSignOut,
 	effect: async (_, { dispatch }) => {
 		await signOut(auth);

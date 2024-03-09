@@ -11,12 +11,12 @@ import {
 import { Link } from "react-router-dom";
 import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import { FavBtn } from "../fav-btn/FavBtn";
-import type { Category } from "../../types/apiTypes";
+import type { Category, Meal, MealFull } from "../../types/apiTypes";
 
-export type DataItem = FavoriteItem | Category;
+export type DataItem = FavoriteItem | Category | Meal | Partial<MealFull>;
 
 interface ItemListProps {
-	data: DataItem[];
+	data: DataItem[] | undefined;
 	page: "home" | "category" | "favorites" | "search";
 	favorites?: FavoriteItem[];
 	handleClick?: (
@@ -35,7 +35,7 @@ export const ItemList = ({
 	const isHomePage = page === "home";
 	return (
 		<List sx={{ width: "100%", maxWidth: "sm", padding: "0px" }}>
-			{data.map((item, i) => {
+			{data?.map((item, i) => {
 				if ("idCategory" in item) {
 					return (
 						<Fragment key={item.idCategory}>

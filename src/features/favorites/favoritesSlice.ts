@@ -11,9 +11,9 @@ import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
 
 export interface FavoriteItem {
-	strMeal: string | null | undefined;
-	idMeal: string | null | undefined;
-	strMealThumb: string | null | undefined;
+	strMeal?: string | null | undefined;
+	idMeal?: string | null | undefined;
+	strMealThumb?: string | null | undefined;
 }
 
 interface FavoritesSliceState {

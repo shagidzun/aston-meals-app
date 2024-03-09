@@ -57,8 +57,7 @@ const Search = () => {
 					<Typography variant="h5">No meals found</Typography>
 				) : (
 					<ItemList
-						//здесь as, т.к. у хука useQuery одно из возвращаемых значений undefined, и ts ругается
-						data={data as DataItem[]}
+						data={data}
 						page={"search"}
 						favorites={favorites}
 						handleClick={handleUpdateFavorites}
