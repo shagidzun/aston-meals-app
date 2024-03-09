@@ -51,14 +51,7 @@ const Category = () => {
 			strMealThumb: string | null | undefined
 		) => {
 			if (isAuth) {
-				dispatch(
-					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-						strMeal: string;
-						idMeal: string;
-						strMealThumb: string;
-						userId: string;
-					})
-				);
+				dispatch(updateFavorites({ strMeal, idMeal, strMealThumb, userId }));
 			} else {
 				navigate("/signin");
 			}
@@ -91,6 +84,7 @@ const Category = () => {
 							</ListItem>
 						</List>
 						<ItemList
+							//здесь as, т.к. у хука useQuery одно из возвращаемых значений undefined, и ts ругается
 							data={data as DataItem[]}
 							handleClick={handleUpdateFavorites}
 							page="category"

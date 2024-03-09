@@ -23,10 +23,10 @@ listenerMiddleware.startListening({
 
 listenerMiddleware.startListening({
 	actionCreator: userSignOut,
-	effect: async (_, api) => {
-		const dispatch = api.dispatch;
+	effect: async (_, { dispatch }) => {
 		await signOut(auth);
 		dispatch(clearHistory());
 		dispatch(clearFavorites());
+		localStorage.removeItem("currentUser");
 	}
 });

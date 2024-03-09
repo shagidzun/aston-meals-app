@@ -11,9 +11,9 @@ import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
 
 export interface FavoriteItem {
-	strMeal: string | null;
-	idMeal: string | null;
-	strMealThumb: string | null;
+	strMeal: string | null | undefined;
+	idMeal: string | null | undefined;
+	strMealThumb: string | null | undefined;
 }
 
 interface FavoritesSliceState {
@@ -34,10 +34,11 @@ export const favoritesSlice = createAppSlice({
 				userId: string | null | undefined,
 				{ getState }
 			): Promise<FavoritesSliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -58,16 +59,8 @@ export const favoritesSlice = createAppSlice({
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
 					if (userStr) {
-						const favoritesLS = JSON.parse(userStr).favorites as FavoriteItem[];
+						const favoritesLS: FavoriteItem[] = JSON.parse(userStr).favorites;
 						favorites = favoritesLS ? favoritesLS : favorites;
-					} else {
-						localStorage.setItem(
-							`${userId}`,
-							JSON.stringify({
-								favorites,
-								history: state.history.history
-							})
-						);
 					}
 				}
 				return {
@@ -96,17 +89,18 @@ export const favoritesSlice = createAppSlice({
 					strMealThumb,
 					userId
 				}: {
-					strMeal: string | null;
-					idMeal: string | null;
-					strMealThumb: string | null;
-					userId: string | null;
+					strMeal: string | null | undefined;
+					idMeal: string | null | undefined;
+					strMealThumb: string | null | undefined;
+					userId: string | null | undefined;
 				},
 				{ getState }
 			): Promise<FavoritesSliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -139,8 +133,9 @@ export const favoritesSlice = createAppSlice({
 					}
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
+					const userLS = JSON.parse(userStr ? userStr : "");
 					if (userStr) {
-						const favoritesLS = JSON.parse(userStr).favorites as FavoriteItem[];
+						const favoritesLS: FavoriteItem[] = userLS.favorites;
 						if (
 							favoritesLS &&
 							favoritesLS.some(
@@ -160,6 +155,7 @@ export const favoritesSlice = createAppSlice({
 							localStorage.setItem(
 								`${userId}`,
 								JSON.stringify({
+									...userLS,
 									favorites: [{ strMeal, idMeal, strMealThumb }],
 									history: state.history.history
 								})
@@ -169,6 +165,7 @@ export const favoritesSlice = createAppSlice({
 					localStorage.setItem(
 						`${userId}`,
 						JSON.stringify({
+							...userLS,
 							favorites,
 							history: state.history.history
 						})

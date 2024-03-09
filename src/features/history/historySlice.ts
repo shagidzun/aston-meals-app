@@ -27,10 +27,11 @@ export const historySlice = createAppSlice({
 				},
 				{ getState }
 			): Promise<HistorySliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -54,13 +55,15 @@ export const historySlice = createAppSlice({
 					}
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
+					const userLS = JSON.parse(userStr ? userStr : "");
 					if (userStr) {
-						const historyLS = JSON.parse(userStr).history as string[];
+						const historyLS: string[] = userLS.history;
 						history = historyLS ? historyLS.concat(url) : [url];
 					}
 					localStorage.setItem(
 						`${userId}`,
 						JSON.stringify({
+							...userLS,
 							history,
 							favorites: state.favorites.favorites
 						})
@@ -80,10 +83,11 @@ export const historySlice = createAppSlice({
 				userId: string | null,
 				{ getState }
 			): Promise<HistorySliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -96,7 +100,7 @@ export const historySlice = createAppSlice({
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
 					if (userStr) {
-						const historyLS = JSON.parse(userStr).history as string[];
+						const historyLS: string[] = JSON.parse(userStr).history;
 						history = historyLS ? historyLS : history;
 					}
 				}

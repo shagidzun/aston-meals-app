@@ -39,14 +39,7 @@ const Meal = () => {
 			strMealThumb: string | null | undefined
 		): void => {
 			if (isAuth) {
-				dispatch(
-					updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-						strMeal: string;
-						idMeal: string;
-						strMealThumb: string;
-						userId: string;
-					})
-				);
+				dispatch(updateFavorites({ strMeal, idMeal, strMealThumb, userId }));
 			} else {
 				navigate("/signin");
 			}
@@ -82,6 +75,8 @@ const Meal = () => {
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
 									<FavBtn
+										/*здесь as, т.к. я сделал Partial<MealFull> на случай изменений в структуре API, а в FavoriteItem
+										требуются все пропсы*/
 										item={meal as FavoriteItem}
 										handleClick={handleUpdateFavorites}
 										favorites={favorites}
