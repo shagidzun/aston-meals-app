@@ -1,10 +1,6 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit";
 import { signOut } from "firebase/auth";
-import {
-	getCurrentUser,
-	setLoadingOff,
-	userSignOut
-} from "../features/user/userSlice";
+import { getCurrentUser, userSignOut } from "../features/user/userSlice";
 import { clearHistory, getHistory } from "../features/history/historySlice";
 import {
 	clearFavorites,
