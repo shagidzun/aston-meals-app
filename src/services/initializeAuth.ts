@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import type { AppDispatch } from "../app/store";
+import type { AppDispatch, RootState } from "../app/store";
 import { store } from "../app/store";
 import { getCurrentUser, setLoadingOff } from "../features/user/userSlice";
 
@@ -13,8 +13,9 @@ interface CurrentUser {
 и прокидывать её в App*/
 export const initializeAuth = (): void => {
 	//здесь используется store, т.к. это не компонент, и хуки нельзя использовать
+	const state: RootState = store.getState();
 	const dispatch: AppDispatch = store.dispatch;
-	if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+	if (state.user.mode === "firebase") {
 		onAuthStateChanged(auth, user => {
 			if (user) {
 				dispatch(getCurrentUser(user.email, user.uid));

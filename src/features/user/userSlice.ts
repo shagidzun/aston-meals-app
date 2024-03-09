@@ -19,13 +19,15 @@ export interface UserSliceState {
 	email: string | null;
 	id: string | null;
 	error?: string;
+	mode?: "ls" | "firebase";
 }
 
 const initialState: UserSliceState = {
 	isLoading: true,
 	isAuth: false,
 	email: null,
-	id: null
+	id: null,
+	mode: import.meta.env.VITE_REMOTE_STORE
 };
 export const userSlice = createAppSlice({
 	name: "user",
@@ -40,7 +42,7 @@ export const userSlice = createAppSlice({
 				password: string;
 			}): Promise<UserSliceState> => {
 				let userState: UserSliceState;
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (initialState.mode === "firebase") {
 					try {
 						const userCredential = await createUserWithEmailAndPassword(
 							auth,
@@ -54,6 +56,7 @@ export const userSlice = createAppSlice({
 							id: user.uid
 						});
 						userState = {
+							...initialState,
 							isLoading: false,
 							isAuth: true,
 							email: user.email,
@@ -91,6 +94,7 @@ export const userSlice = createAppSlice({
 					);
 					localStorage.setItem("currentUser", JSON.stringify({ email, id }));
 					userState = {
+						...initialState,
 						isLoading: false,
 						isAuth: true,
 						email,
@@ -128,7 +132,7 @@ export const userSlice = createAppSlice({
 			): Promise<UserSliceState> => {
 				let userState: UserSliceState = initialState;
 				const dispatch = thunkAPI.dispatch as AppDispatch;
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (initialState.mode === "firebase") {
 					try {
 						const userCredential = await signInWithEmailAndPassword(
 							auth,
@@ -141,6 +145,7 @@ export const userSlice = createAppSlice({
 						dispatch(getFavorites(user.uid));
 						dispatch(getHistory(user.uid));
 						userState = {
+							...initialState,
 							isLoading: false,
 							isAuth: true,
 							email: user.email,
@@ -169,6 +174,7 @@ export const userSlice = createAppSlice({
 								JSON.stringify({ email, id: itemStr })
 							);
 							userState = {
+								...initialState,
 								isLoading: false,
 								isAuth: true,
 								email,

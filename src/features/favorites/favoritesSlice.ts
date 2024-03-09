@@ -37,7 +37,7 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -98,7 +98,7 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
+				if (state.user.mode === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
