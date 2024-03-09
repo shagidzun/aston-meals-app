@@ -59,5 +59,5 @@
   - [ ] Проведена **оптимизация приложения**
   - [ ] **Feature Flags.** Реализовать фичу “Поделиться в телеграм”, закрытую под фича флагом
   - [ ] Добавить тесты через jest, react-testing-library или Playwright.
-  - [x] Связь UI и бизнес-логики построена не через команды, а через **события** ([пример](https://github.com/shagidzun/aston-meals-app/blob/main/src/features/favorites/favoritesSlice.ts))
+  - [x] Связь UI и бизнес-логики построена не через команды, а через **события** ([пример](https://github.com/shagidzun/aston-meals-app/blob/main/src/features/user/userSlice.ts#L82): userSignIn объединяет в себе набор действий, которые запускаются в ответ на событие - отправку формы ([отправка запроса через Firebase](https://github.com/shagidzun/aston-meals-app/blob/main/src/features/user/userSlice.ts#L101), [загрузка списка избранного](https://github.com/shagidzun/aston-meals-app/blob/main/src/features/user/userSlice.ts#L103), [загрузка истории поиска](https://github.com/shagidzun/aston-meals-app/blob/main/src/features/user/userSlice.ts#L104)))
   - [ ] **Project Console API**
