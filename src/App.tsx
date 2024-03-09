@@ -17,6 +17,8 @@ const ErrorBoundary = lazy(
 	() => import("./pages/error-boundary/ErrorBoundary")
 );
 
+initializeAuth();
+
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -76,7 +78,5 @@ const App = () => {
 		</ThemeProvider>
 	);
 };
-
-initializeAuth();
 
 export default App;

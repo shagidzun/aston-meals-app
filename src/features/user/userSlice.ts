@@ -11,7 +11,7 @@ import { db } from "../../firebase/firebase";
 import type { AppDispatch } from "../../app/store";
 import { getFavorites } from "../favorites/favoritesSlice";
 import { getHistory } from "../history/historySlice";
-import { parseLSItem, User } from "../../utils/parseLSItem";
+import { parseLSItem } from "../../utils/parseLSItem";
 
 export interface UserSliceState {
 	isLoading: boolean;
