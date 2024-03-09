@@ -54,13 +54,15 @@ export const historySlice = createAppSlice({
 					}
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
+					const userLS = JSON.parse(userStr ? userStr : "");
 					if (userStr) {
-						const historyLS = JSON.parse(userStr).history as string[];
+						const historyLS: string[] = userLS.history;
 						history = historyLS ? historyLS.concat(url) : [url];
 					}
 					localStorage.setItem(
 						`${userId}`,
 						JSON.stringify({
+							...userLS,
 							history,
 							favorites: state.favorites.favorites
 						})

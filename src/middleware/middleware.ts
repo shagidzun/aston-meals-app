@@ -1,6 +1,10 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit";
 import { signOut } from "firebase/auth";
-import { getCurrentUser, userSignOut } from "../features/user/userSlice";
+import {
+	getCurrentUser,
+	setLoadingOff,
+	userSignOut
+} from "../features/user/userSlice";
 import { clearHistory, getHistory } from "../features/history/historySlice";
 import {
 	clearFavorites,
@@ -18,15 +22,17 @@ listenerMiddleware.startListening({
 		const state = getState() as RootState;
 		dispatch(getHistory(state.user.id));
 		dispatch(getFavorites(state.user.id));
+		dispatch(setLoadingOff());
 	}
 });
 
 listenerMiddleware.startListening({
 	actionCreator: userSignOut,
-	effect: async (_, api) => {
-		const dispatch = api.dispatch;
+	effect: async (_, { dispatch }) => {
+		//используется as т.к. тип не передается автоматически
 		await signOut(auth);
 		dispatch(clearHistory());
 		dispatch(clearFavorites());
+		localStorage.removeItem("currentUser");
 	}
 });

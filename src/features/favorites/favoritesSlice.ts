@@ -58,16 +58,8 @@ export const favoritesSlice = createAppSlice({
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
 					if (userStr) {
-						const favoritesLS = JSON.parse(userStr).favorites as FavoriteItem[];
+						const favoritesLS: FavoriteItem[] = JSON.parse(userStr).favorites;
 						favorites = favoritesLS ? favoritesLS : favorites;
-					} else {
-						localStorage.setItem(
-							`${userId}`,
-							JSON.stringify({
-								favorites,
-								history: state.history.history
-							})
-						);
 					}
 				}
 				return {
@@ -139,8 +131,9 @@ export const favoritesSlice = createAppSlice({
 					}
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
+					const userLS = JSON.parse(userStr ? userStr : "");
 					if (userStr) {
-						const favoritesLS = JSON.parse(userStr).favorites as FavoriteItem[];
+						const favoritesLS: FavoriteItem[] = userLS.favorites;
 						if (
 							favoritesLS &&
 							favoritesLS.some(
@@ -160,6 +153,7 @@ export const favoritesSlice = createAppSlice({
 							localStorage.setItem(
 								`${userId}`,
 								JSON.stringify({
+									...userLS,
 									favorites: [{ strMeal, idMeal, strMealThumb }],
 									history: state.history.history
 								})
@@ -169,6 +163,7 @@ export const favoritesSlice = createAppSlice({
 					localStorage.setItem(
 						`${userId}`,
 						JSON.stringify({
+							...userLS,
 							favorites,
 							history: state.history.history
 						})
