@@ -36,14 +36,7 @@ const Favorites = () => {
 			idMeal: string | null | undefined,
 			strMealThumb: string | null | undefined
 		) => {
-			dispatch(
-				updateFavorites({ strMeal, idMeal, strMealThumb, userId } as {
-					strMeal: string;
-					idMeal: string;
-					strMealThumb: string;
-					userId: string;
-				})
-			);
+			dispatch(updateFavorites({ strMeal, idMeal, strMealThumb, userId }));
 		},
 		[dispatch, userId]
 	);

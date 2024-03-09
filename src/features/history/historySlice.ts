@@ -27,6 +27,7 @@ export const historySlice = createAppSlice({
 				},
 				{ getState }
 			): Promise<HistorySliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
@@ -82,6 +83,7 @@ export const historySlice = createAppSlice({
 				userId: string | null,
 				{ getState }
 			): Promise<HistorySliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
@@ -98,7 +100,7 @@ export const historySlice = createAppSlice({
 				} else {
 					const userStr = localStorage.getItem(`${userId}`);
 					if (userStr) {
-						const historyLS = JSON.parse(userStr).history as string[];
+						const historyLS: string[] = JSON.parse(userStr).history;
 						history = historyLS ? historyLS : history;
 					}
 				}

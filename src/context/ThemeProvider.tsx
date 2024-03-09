@@ -7,9 +7,10 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-	const storedTheme = localStorage.getItem("theme");
+	//здесь as, т.к. у getItem одно из возращаемых значений null
+	const storedTheme = localStorage.getItem("theme") as Theme;
 	const [theme, setTheme] = useState<Theme>(
-		storedTheme ? (storedTheme as Theme) : "primary"
+		storedTheme ? storedTheme : "primary"
 	);
 	const toggleTheme = useCallback((): void => {
 		setTheme(theme === "primary" ? "success" : "primary");

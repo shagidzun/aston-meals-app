@@ -131,6 +131,7 @@ export const userSlice = createAppSlice({
 				thunkAPI
 			): Promise<UserSliceState> => {
 				let userState: UserSliceState = initialState;
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const dispatch = thunkAPI.dispatch as AppDispatch;
 				if (initialState.mode === "firebase") {
 					try {

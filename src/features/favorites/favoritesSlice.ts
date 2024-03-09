@@ -11,9 +11,9 @@ import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
 
 export interface FavoriteItem {
-	strMeal: string | null;
-	idMeal: string | null;
-	strMealThumb: string | null;
+	strMeal: string | null | undefined;
+	idMeal: string | null | undefined;
+	strMealThumb: string | null | undefined;
 }
 
 interface FavoritesSliceState {
@@ -34,6 +34,7 @@ export const favoritesSlice = createAppSlice({
 				userId: string | null | undefined,
 				{ getState }
 			): Promise<FavoritesSliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
@@ -88,13 +89,14 @@ export const favoritesSlice = createAppSlice({
 					strMealThumb,
 					userId
 				}: {
-					strMeal: string | null;
-					idMeal: string | null;
-					strMealThumb: string | null;
-					userId: string | null;
+					strMeal: string | null | undefined;
+					idMeal: string | null | undefined;
+					strMealThumb: string | null | undefined;
+					userId: string | null | undefined;
 				},
 				{ getState }
 			): Promise<FavoritesSliceState> => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
