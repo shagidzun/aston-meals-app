@@ -13,6 +13,10 @@ interface CurrentUser {
 и прокидывать её в App*/
 export const initializeAuth = (): void => {
 	const dispatch: AppDispatch = store.dispatch;
+	/*Здесь, на мой взгляд, невозможно избежать прокидывания переменной окружения (по-крайней мере при моём подходе).
+	Если и делать так, чтобы она действительно прокидывлась в одном месте,
+	пришлось бы совместить получение текущего пользователя с экспортами. По-моему, это
+	было бы неуместно*/
 	if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
 		onAuthStateChanged(auth, user => {
 			if (user) {

@@ -12,7 +12,6 @@ import type { AppDispatch } from "../../app/store";
 import { getFavorites } from "../actions-exports";
 import { getHistory } from "../actions-exports";
 import { parseLSItem } from "../../utils/parseLSItem";
-import { REMOTE_STORE } from "../../remote-config";
 
 export interface UserSliceState {
 	isLoading: boolean;

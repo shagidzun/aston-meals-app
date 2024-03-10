@@ -6,11 +6,9 @@ import {
 	getDocs,
 	setDoc
 } from "firebase/firestore";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
-import { REMOTE_STORE } from "../../remote-config";
 
 export interface FavoriteItem {
 	strMeal?: string | null | undefined;
