@@ -6,9 +6,11 @@ import {
 	getDocs,
 	setDoc
 } from "firebase/firestore";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
+import { REMOTE_STORE } from "../../remote-config";
 
 export interface FavoriteItem {
 	strMeal?: string | null | undefined;
@@ -38,7 +40,7 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (state.user.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -100,7 +102,7 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (state.user.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -184,7 +186,90 @@ export const favoritesSlice = createAppSlice({
 		),
 		clearFavorites: create.reducer(state => {
 			state.favorites = [];
-		})
+		}),
+		getFavoritesLS: create.asyncThunk(
+			(userId): FavoritesSliceState => {
+				let favorites: FavoriteItem[] = initialState.favorites;
+				const userStr = localStorage.getItem(`${userId}`);
+				if (userStr) {
+					const favoritesLS: FavoriteItem[] = JSON.parse(userStr).favorites;
+					favorites = favoritesLS ? favoritesLS : favorites;
+				}
+				return { ...initialState, favorites };
+			},
+			{
+				fulfilled: (state, action) => {
+					state.favorites = action.payload.favorites;
+				}
+			}
+		),
+		updateFavoritesLS: create.asyncThunk(
+			(
+				{
+					strMeal,
+					idMeal,
+					strMealThumb,
+					userId
+				}: {
+					strMeal: string | null | undefined;
+					idMeal: string | null | undefined;
+					strMealThumb: string | null | undefined;
+					userId: string | null | undefined;
+				},
+				{ getState }
+			): { favorites: FavoriteItem[]; isLoading: boolean } => {
+				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
+				const state = getState() as RootState;
+				let favorites: FavoriteItem[] = state.favorites.favorites;
+				const userStr = localStorage.getItem(`${userId}`);
+				const userLS = JSON.parse(userStr ? userStr : "");
+				if (userStr) {
+					const favoritesLS: FavoriteItem[] = userLS.favorites;
+					if (
+						favoritesLS &&
+						favoritesLS.some(
+							item => item.idMeal === idMeal && item.strMeal === strMeal
+						)
+					) {
+						favorites = favoritesLS.filter(
+							item => item.idMeal !== idMeal && item.strMeal !== strMeal
+						);
+					} else if (favoritesLS) {
+						favorites = favoritesLS.concat({
+							strMeal: strMeal,
+							idMeal: idMeal,
+							strMealThumb: strMealThumb
+						});
+					} else {
+						localStorage.setItem(
+							`${userId}`,
+							JSON.stringify({
+								...userLS,
+								favorites: [{ strMeal, idMeal, strMealThumb }],
+								history: state.history.history
+							})
+						);
+					}
+				}
+				localStorage.setItem(
+					`${userId}`,
+					JSON.stringify({
+						...userLS,
+						favorites,
+						history: state.history.history
+					})
+				);
+				return {
+					...state.favorites,
+					favorites
+				};
+			},
+			{
+				fulfilled: (state, action) => {
+					state.favorites = action.payload.favorites;
+				}
+			}
+		)
 	}),
 	selectors: {
 		selectFavorites: state => state.favorites,
@@ -192,6 +277,11 @@ export const favoritesSlice = createAppSlice({
 	}
 });
 
-export const { getFavorites, updateFavorites, clearFavorites } =
-	favoritesSlice.actions;
+export const {
+	getFavorites,
+	updateFavorites,
+	getFavoritesLS,
+	updateFavoritesLS,
+	clearFavorites
+} = favoritesSlice.actions;
 export const { selectFavorites, selectFavIsLoading } = favoritesSlice.selectors;

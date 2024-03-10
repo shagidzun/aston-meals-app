@@ -1,7 +1,9 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
+import { REMOTE_STORE } from "../../remote-config";
 
 interface HistorySliceState {
 	history: string[];
@@ -31,7 +33,7 @@ export const historySlice = createAppSlice({
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (state.user.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -87,7 +89,7 @@ export const historySlice = createAppSlice({
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (state.user.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userSnap = await getDoc(userRef);
 						if (userSnap.exists()) {
@@ -121,7 +123,58 @@ export const historySlice = createAppSlice({
 		),
 		clearHistory: create.reducer(state => {
 			state.history = [];
-		})
+		}),
+		getHistoryLS: create.asyncThunk(
+			(userId: string | null): HistorySliceState => {
+				let history: string[] = initialState.history;
+				const userStr = localStorage.getItem(`${userId}`);
+				if (userStr) {
+					const historyLS: string[] = JSON.parse(userStr).history;
+					history = historyLS ? historyLS : history;
+				}
+				return { ...initialState, history };
+			},
+			{
+				fulfilled: (state, action) => {
+					state.history = action.payload.history;
+				}
+			}
+		),
+		updateHistoryLS: create.asyncThunk(
+			(
+				{
+					url,
+					userId
+				}: {
+					url: string;
+					userId: string | null;
+				},
+				{ getState }
+			): { isLoading: boolean; history: string[] } => {
+				const state = getState() as RootState;
+				let history = state.history.history;
+				const userStr = localStorage.getItem(`${userId}`);
+				const userLS = JSON.parse(userStr ? userStr : "");
+				if (userStr) {
+					const historyLS: string[] = userLS.history;
+					history = historyLS ? historyLS.concat(url) : [url];
+				}
+				localStorage.setItem(
+					`${userId}`,
+					JSON.stringify({
+						...userLS,
+						history,
+						favorites: state.favorites.favorites
+					})
+				);
+				return { ...state.history, history };
+			},
+			{
+				fulfilled: (state, action) => {
+					state.history = action.payload.history;
+				}
+			}
+		)
 	}),
 	selectors: {
 		selectHistory: state => state.history,
@@ -129,5 +182,11 @@ export const historySlice = createAppSlice({
 	}
 });
 
-export const { updateHistory, getHistory, clearHistory } = historySlice.actions;
+export const {
+	updateHistory,
+	getHistory,
+	updateHistoryLS,
+	getHistoryLS,
+	clearHistory
+} = historySlice.actions;
 export const { selectHistory, selectHistoryIsLoading } = historySlice.selectors;

@@ -12,6 +12,7 @@ import type { AppDispatch } from "../../app/store";
 import { getFavorites } from "../favorites/favoritesSlice";
 import { getHistory } from "../history/historySlice";
 import { parseLSItem } from "../../utils/parseLSItem";
+import { REMOTE_STORE } from "../../remote-config";
 
 export interface UserSliceState {
 	isLoading: boolean;
@@ -19,15 +20,13 @@ export interface UserSliceState {
 	email: string | null;
 	id: string | null;
 	error?: string;
-	mode?: "ls" | "firebase";
 }
 
 const initialState: UserSliceState = {
 	isLoading: true,
 	isAuth: false,
 	email: null,
-	id: null,
-	mode: import.meta.env.VITE_REMOTE_STORE
+	id: null
 };
 export const userSlice = createAppSlice({
 	name: "user",
@@ -42,7 +41,7 @@ export const userSlice = createAppSlice({
 				password: string;
 			}): Promise<UserSliceState> => {
 				let userState: UserSliceState;
-				if (initialState.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userCredential = await createUserWithEmailAndPassword(
 							auth,
@@ -133,7 +132,7 @@ export const userSlice = createAppSlice({
 				let userState: UserSliceState = initialState;
 				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const dispatch = thunkAPI.dispatch as AppDispatch;
-				if (initialState.mode === "firebase") {
+				if (REMOTE_STORE === "firebase") {
 					try {
 						const userCredential = await signInWithEmailAndPassword(
 							auth,
@@ -230,7 +229,110 @@ export const userSlice = createAppSlice({
 		),
 		setLoadingOff: create.reducer(state => {
 			state.isLoading = false;
-		})
+		}),
+		userSignInLS: create.asyncThunk(
+			({
+				email,
+				password
+			}: {
+				email: string;
+				password: string;
+			}): UserSliceState => {
+				let userState: UserSliceState = initialState;
+				let isMatched: boolean = false;
+				for (let itemStr in localStorage) {
+					const storageItem = localStorage.getItem(itemStr);
+					const parsedItem = parseLSItem(storageItem);
+					if (
+						parsedItem &&
+						Object.prototype.hasOwnProperty.call(parsedItem, "credentials") &&
+						parsedItem.credentials.email === email &&
+						parsedItem.credentials.password === password
+					) {
+						localStorage.setItem(
+							"currentUser",
+							JSON.stringify({ email, id: itemStr })
+						);
+						userState = {
+							...initialState,
+							isLoading: false,
+							isAuth: true,
+							email,
+							id: itemStr
+						};
+						isMatched = true;
+						break;
+					}
+				}
+				if (!isMatched) {
+					userState = {
+						...initialState,
+						error: "Wrong email or password"
+					};
+				}
+				return userState;
+			},
+			{
+				fulfilled: (state, action) => {
+					state.isLoading = false;
+					state.isAuth = action.payload.isAuth;
+					state.email = action.payload.email;
+					state.id = action.payload.id;
+					state.error = action.payload.error;
+				}
+			}
+		),
+		userSignUpLS: create.asyncThunk(
+			({
+				email,
+				password
+			}: {
+				email: string;
+				password: string;
+			}): UserSliceState => {
+				let userState: UserSliceState;
+				for (let itemStr in localStorage) {
+					const storageItem = localStorage.getItem(itemStr);
+					const parsedItem = parseLSItem(storageItem);
+					if (parsedItem && parsedItem.credentials.email === email) {
+						return {
+							...initialState,
+							error: "Account already exists"
+						};
+					}
+				}
+				const id = nanoid();
+				localStorage.setItem(
+					id,
+					JSON.stringify({
+						credentials: {
+							email,
+							password
+						},
+						history: [],
+						favorites: []
+					})
+				);
+				localStorage.setItem("currentUser", JSON.stringify({ email, id }));
+				userState = {
+					...initialState,
+					isLoading: false,
+					isAuth: true,
+					email,
+					id
+				};
+				return userState;
+			},
+			{
+				fulfilled: (state, action) => {
+					state.isLoading = false;
+					state.isAuth = action.payload.isAuth;
+					state.email = action.payload.email;
+					state.id = action.payload.id;
+					state.error = action.payload.error;
+				}
+			}
+		)
 	}),
 	selectors: {
 		selectIsAuth: user => user.isAuth,
@@ -245,6 +347,8 @@ export const {
 	userSignUp,
 	userSignIn,
 	userSignOut,
+	userSignInLS,
+	userSignUpLS,
 	getCurrentUser,
 	setLoadingOff
 } = userSlice.actions;
