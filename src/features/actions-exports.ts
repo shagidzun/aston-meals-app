@@ -3,6 +3,7 @@ import type { UserSliceState } from "./user/userSlice";
 import type { FavoritesSliceState } from "./favorites/favoritesSlice";
 import type { HistorySliceState } from "./history/historySlice";
 
+//третий тип у всех в AsyncThunk any, т.к. нужный тип в RTK отсутствует (PreventCircular<AsyncThunkConfig>)
 let userSignIn: AsyncThunk<
 	UserSliceState,
 	{ email: string; password: string },

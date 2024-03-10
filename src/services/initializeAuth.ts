@@ -1,9 +1,8 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import type { AppDispatch, RootState } from "../app/store";
+import type { AppDispatch } from "../app/store";
 import { store } from "../app/store";
 import { getCurrentUser, setLoadingOff } from "../features/user/userSlice";
-import { REMOTE_STORE } from "../remote-config";
 
 interface CurrentUser {
 	email: string;
@@ -14,7 +13,7 @@ interface CurrentUser {
 и прокидывать её в App*/
 export const initializeAuth = (): void => {
 	const dispatch: AppDispatch = store.dispatch;
-	if (REMOTE_STORE === "firebase") {
+	if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
 		onAuthStateChanged(auth, user => {
 			if (user) {
 				dispatch(getCurrentUser(user.email, user.uid));
