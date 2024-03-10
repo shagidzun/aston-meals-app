@@ -3,6 +3,7 @@ import { auth } from "../firebase/firebase";
 import type { AppDispatch, RootState } from "../app/store";
 import { store } from "../app/store";
 import { getCurrentUser, setLoadingOff } from "../features/user/userSlice";
+import { REMOTE_STORE } from "../remote-config";
 
 interface CurrentUser {
 	email: string;
@@ -12,10 +13,8 @@ interface CurrentUser {
 /*Решил создать отдельную функцию для получения текущего юзера в зависимости от переменной окружения
 и прокидывать её в App*/
 export const initializeAuth = (): void => {
-	//здесь используется store, т.к. это не компонент, и хуки нельзя использовать
-	const state: RootState = store.getState();
 	const dispatch: AppDispatch = store.dispatch;
-	if (state.user.mode === "firebase") {
+	if (REMOTE_STORE === "firebase") {
 		onAuthStateChanged(auth, user => {
 			if (user) {
 				dispatch(getCurrentUser(user.email, user.uid));

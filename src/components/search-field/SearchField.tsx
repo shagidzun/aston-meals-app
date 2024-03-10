@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import { Form, Link, useNavigate } from "react-router-dom";
 import { useGetMealByNameQuery } from "../../services/mealsApi";
 import { useAppDispatch, useAppSelector, useDebounce } from "../../app/hooks";
-import { updateHistory } from "../../features/history/historySlice";
+import { updateHistory } from "../../features/actions-exports";
 import { selectId } from "../../features/user/userSlice";
 
 interface SearchFieldProps {

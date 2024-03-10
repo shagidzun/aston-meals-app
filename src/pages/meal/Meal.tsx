@@ -6,10 +6,8 @@ import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
 import { SearchField } from "../../components/search-field/SearchField";
-import {
-	selectFavorites,
-	updateFavorites
-} from "../../features/favorites/favoritesSlice";
+import { selectFavorites } from "../../features/favorites/favoritesSlice";
+import { updateFavorites } from "../../features/actions-exports";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
 	selectId,

@@ -9,8 +9,8 @@ import { createAppSlice } from "../../app/createAppSlice";
 import { auth } from "../../firebase/firebase";
 import { db } from "../../firebase/firebase";
 import type { AppDispatch } from "../../app/store";
-import { getFavorites } from "../favorites/favoritesSlice";
-import { getHistory } from "../history/historySlice";
+import { getFavorites } from "../actions-exports";
+import { getHistory } from "../actions-exports";
 import { parseLSItem } from "../../utils/parseLSItem";
 import { REMOTE_STORE } from "../../remote-config";
 

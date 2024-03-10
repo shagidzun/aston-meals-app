@@ -17,16 +17,13 @@ import {
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search-field/SearchField";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
-import {
-	getFavorites,
-	selectFavorites,
-	updateFavorites
-} from "../../features/favorites/favoritesSlice";
+import { selectFavorites } from "../../features/favorites/favoritesSlice";
 import {
 	selectId,
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
+import { getFavorites, updateFavorites } from "../../features/actions-exports";
 import { ItemList } from "../../components/item-list/ItemList";
 
 const Category = () => {

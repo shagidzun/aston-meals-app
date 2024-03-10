@@ -16,11 +16,10 @@ import {
 	selectIsLoading
 } from "../../features/user/userSlice";
 import {
-	getFavorites,
 	selectFavIsLoading,
-	selectFavorites,
-	updateFavorites
+	selectFavorites
 } from "../../features/favorites/favoritesSlice";
+import { getFavorites, updateFavorites } from "../../features/actions-exports";
 import { ItemList } from "../../components/item-list/ItemList";
 
 const Favorites = () => {

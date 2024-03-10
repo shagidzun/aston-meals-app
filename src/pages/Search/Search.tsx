@@ -13,10 +13,8 @@ import {
 } from "../../features/user/userSlice";
 import type { DataItem } from "../../components/item-list/ItemList";
 import { ItemList } from "../../components/item-list/ItemList";
-import {
-	selectFavorites,
-	updateFavorites
-} from "../../features/favorites/favoritesSlice";
+import { selectFavorites } from "../../features/favorites/favoritesSlice";
+import { updateFavorites } from "../../features/actions-exports";
 
 const Search = () => {
 	const [searchParams] = useSearchParams();

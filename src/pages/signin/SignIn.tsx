@@ -8,9 +8,9 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
 	selectError,
 	selectIsAuth,
-	selectIsLoading,
-	userSignIn
+	selectIsLoading
 } from "../../features/user/userSlice";
+import { userSignIn } from "../../features/actions-exports";
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();
