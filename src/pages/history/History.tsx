@@ -9,10 +9,10 @@ import {
 	selectIsLoading
 } from "../../features/user/userSlice";
 import {
-	getHistory,
 	selectHistory,
 	selectHistoryIsLoading
 } from "../../features/history/historySlice";
+import { getHistory } from "../../features/actions-exports";
 import { HistoryList } from "../../components/HistoryList";
 
 const History = () => {

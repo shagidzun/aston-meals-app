@@ -17,17 +17,13 @@ import {
 } from "../../services/mealsApi";
 import { SearchField } from "../../components/search-field/SearchField";
 import { useAppDispatch, useAppSelector, useGetData } from "../../app/hooks";
-import {
-	getFavorites,
-	selectFavorites,
-	updateFavorites
-} from "../../features/favorites/favoritesSlice";
+import { selectFavorites } from "../../features/favorites/favoritesSlice";
 import {
 	selectId,
 	selectIsAuth,
 	selectIsLoading
 } from "../../features/user/userSlice";
-import type { DataItem } from "../../components/item-list/ItemList";
+import { getFavorites, updateFavorites } from "../../features/actions-exports";
 import { ItemList } from "../../components/item-list/ItemList";
 
 const Category = () => {
@@ -85,7 +81,7 @@ const Category = () => {
 						</List>
 						<ItemList
 							//здесь as, т.к. у хука useQuery одно из возвращаемых значений undefined, и ts ругается
-							data={data as DataItem[]}
+							data={data}
 							handleClick={handleUpdateFavorites}
 							page="category"
 							favorites={favorites}

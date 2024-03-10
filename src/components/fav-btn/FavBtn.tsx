@@ -2,6 +2,7 @@ import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
 import { useTheme } from "../../context/context";
+import type { MealFull } from "../../types/apiTypes";
 
 interface FavBtnProps {
 	favorites?: FavoriteItem[];
@@ -10,7 +11,7 @@ interface FavBtnProps {
 		id: string | null | undefined,
 		imgUrl: string | null | undefined
 	) => void;
-	item?: FavoriteItem;
+	item?: FavoriteItem | Partial<MealFull>;
 }
 
 export const FavBtn = ({ favorites, handleClick, item }: FavBtnProps) => {

@@ -1,27 +1,29 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit";
 import { signOut } from "firebase/auth";
 import { getCurrentUser, userSignOut } from "../features/user/userSlice";
-import { clearHistory, getHistory } from "../features/history/historySlice";
-import {
-	clearFavorites,
-	getFavorites
-} from "../features/favorites/favoritesSlice";
+import { clearHistory } from "../features/history/historySlice";
+import { clearFavorites } from "../features/favorites/favoritesSlice";
 import { auth } from "../firebase/firebase";
-import type { RootState } from "../app/store";
+import type { AppDispatch, RootState } from "../app/store";
+import { getFavorites, getHistory } from "../features/actions-exports";
 
 export const listenerMiddleware = createListenerMiddleware();
 
-listenerMiddleware.startListening({
+const startAppListening = listenerMiddleware.startListening.withTypes<
+	RootState,
+	AppDispatch
+>();
+
+startAppListening({
 	actionCreator: getCurrentUser,
 	effect: (_, { dispatch, getState }) => {
-		//используется as т.к. тип не передается автоматически
-		const state = getState() as RootState;
+		const state = getState();
 		dispatch(getHistory(state.user.id));
 		dispatch(getFavorites(state.user.id));
 	}
 });
 
-listenerMiddleware.startListening({
+startAppListening({
 	actionCreator: userSignOut,
 	effect: async (_, { dispatch }) => {
 		await signOut(auth);

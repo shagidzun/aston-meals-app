@@ -6,11 +6,8 @@ import { useGetMealByIdQuery } from "../../services/mealsApi";
 import { Navigation } from "../../components/navigation/Navigation";
 import { filterProps } from "../../utils/filterProps";
 import { SearchField } from "../../components/search-field/SearchField";
-import type { FavoriteItem } from "../../features/favorites/favoritesSlice";
-import {
-	selectFavorites,
-	updateFavorites
-} from "../../features/favorites/favoritesSlice";
+import { selectFavorites } from "../../features/favorites/favoritesSlice";
+import { updateFavorites } from "../../features/actions-exports";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
 	selectId,
@@ -75,9 +72,7 @@ const Meal = () => {
 								<figcaption>
 									<Typography>{meal?.strMeal}</Typography>
 									<FavBtn
-										/*здесь as, т.к. я сделал Partial<MealFull> на случай изменений в структуре API, а в FavoriteItem
-										требуются все пропсы*/
-										item={meal as FavoriteItem}
+										item={meal}
 										handleClick={handleUpdateFavorites}
 										favorites={favorites}
 									/>

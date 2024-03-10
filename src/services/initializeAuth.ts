@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import type { AppDispatch, RootState } from "../app/store";
+import type { AppDispatch } from "../app/store";
 import { store } from "../app/store";
 import { getCurrentUser, setLoadingOff } from "../features/user/userSlice";
 
@@ -12,10 +12,12 @@ interface CurrentUser {
 /*Решил создать отдельную функцию для получения текущего юзера в зависимости от переменной окружения
 и прокидывать её в App*/
 export const initializeAuth = (): void => {
-	//здесь используется store, т.к. это не компонент, и хуки нельзя использовать
-	const state: RootState = store.getState();
 	const dispatch: AppDispatch = store.dispatch;
-	if (state.user.mode === "firebase") {
+	/*Здесь, на мой взгляд, невозможно избежать прокидывания переменной окружения (по-крайней мере при моём подходе).
+	Если и делать так, чтобы она действительно прокидывлась в одном месте,
+	пришлось бы совместить получение текущего пользователя с экспортами. По-моему, это
+	было бы неуместно*/
+	if (import.meta.env.VITE_REMOTE_STORE === "firebase") {
 		onAuthStateChanged(auth, user => {
 			if (user) {
 				dispatch(getCurrentUser(user.email, user.uid));
