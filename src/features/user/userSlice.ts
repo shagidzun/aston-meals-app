@@ -41,63 +41,30 @@ export const userSlice = createAppSlice({
 				password: string;
 			}): Promise<UserSliceState> => {
 				let userState: UserSliceState;
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userCredential = await createUserWithEmailAndPassword(
-							auth,
-							email,
-							password
-						);
-						const user = userCredential.user;
-						const userRef = doc(db, "users", user.uid);
-						await setDoc(userRef, {
-							email: user.email,
-							id: user.uid
-						});
-						userState = {
-							...initialState,
-							isLoading: false,
-							isAuth: true,
-							email: user.email,
-							id: user.uid
-						};
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						userState = {
-							...initialState,
-							error: err.message
-						};
-					}
-				} else {
-					for (let itemStr in localStorage) {
-						const storageItem = localStorage.getItem(itemStr);
-						const parsedItem = parseLSItem(storageItem);
-						if (parsedItem && parsedItem.credentials.email === email) {
-							return {
-								...initialState,
-								error: "Account already exists"
-							};
-						}
-					}
-					const id = nanoid();
-					localStorage.setItem(
-						id,
-						JSON.stringify({
-							credentials: {
-								email,
-								password
-							},
-							history: [],
-							favorites: []
-						})
+				try {
+					const userCredential = await createUserWithEmailAndPassword(
+						auth,
+						email,
+						password
 					);
-					localStorage.setItem("currentUser", JSON.stringify({ email, id }));
+					const user = userCredential.user;
+					const userRef = doc(db, "users", user.uid);
+					await setDoc(userRef, {
+						email: user.email,
+						id: user.uid
+					});
 					userState = {
 						...initialState,
 						isLoading: false,
 						isAuth: true,
-						email,
-						id
+						email: user.email,
+						id: user.uid
+					};
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					userState = {
+						...initialState,
+						error: err.message
 					};
 				}
 				return userState;
@@ -132,65 +99,32 @@ export const userSlice = createAppSlice({
 				let userState: UserSliceState = initialState;
 				//здесь as, т.к. не передается тип + так советуют делать создатели в асинк санках
 				const dispatch = thunkAPI.dispatch as AppDispatch;
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userCredential = await signInWithEmailAndPassword(
-							auth,
-							email,
-							password
-						);
-						//здесь as, т.к. в доке есть такая рекомендация при создании санков через create.asyncThunk
-						//подробнее тут: https://redux-toolkit.js.org/usage/usage-with-typescript#typing-async-thunks-inside-createslice
-						const user = userCredential.user;
-						dispatch(getFavorites(user.uid));
-						dispatch(getHistory(user.uid));
-						userState = {
-							...initialState,
-							isLoading: false,
-							isAuth: true,
-							email: user.email,
-							id: user.uid
-						};
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						userState = {
-							...initialState,
-							error: err.message
-						};
-					}
-				} else {
-					let isMatched: boolean = false;
-					for (let itemStr in localStorage) {
-						const storageItem = localStorage.getItem(itemStr);
-						const parsedItem = parseLSItem(storageItem);
-						if (
-							parsedItem &&
-							Object.prototype.hasOwnProperty.call(parsedItem, "credentials") &&
-							parsedItem.credentials.email === email &&
-							parsedItem.credentials.password === password
-						) {
-							localStorage.setItem(
-								"currentUser",
-								JSON.stringify({ email, id: itemStr })
-							);
-							userState = {
-								...initialState,
-								isLoading: false,
-								isAuth: true,
-								email,
-								id: itemStr
-							};
-							isMatched = true;
-							break;
-						}
-					}
-					if (!isMatched) {
-						userState = {
-							...initialState,
-							error: "Wrong email or password"
-						};
-					}
+				try {
+					const userCredential = await signInWithEmailAndPassword(
+						auth,
+						email,
+						password
+					);
+					//здесь as, т.к. в доке есть такая рекомендация при создании санков через create.asyncThunk
+					//подробнее тут: https://redux-toolkit.js.org/usage/usage-with-typescript#typing-async-thunks-inside-createslice
+					const user = userCredential.user;
+					dispatch(getFavorites(user.uid));
+					dispatch(getHistory(user.uid));
+					userState = {
+						...initialState,
+						isLoading: false,
+						isAuth: true,
+						email: user.email,
+						id: user.uid
+					};
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					userState = {
+						...initialState,
+						error: err.message
+					};
 				}
+
 				return userState;
 			},
 			{

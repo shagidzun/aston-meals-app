@@ -5,7 +5,7 @@ import { db } from "../../firebase/firebase";
 import type { RootState } from "../../app/store";
 import { REMOTE_STORE } from "../../remote-config";
 
-interface HistorySliceState {
+export interface HistorySliceState {
 	history: string[];
 	isLoading: boolean;
 }
@@ -33,43 +33,26 @@ export const historySlice = createAppSlice({
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userSnap = await getDoc(userRef);
-						if (userSnap.exists()) {
-							if (userSnap.data().history) {
-								const fetchedHistory = userSnap.data().history;
-								fetchedHistory.push(url);
-								await updateDoc(userRef, {
-									history: fetchedHistory
-								});
-								history = fetchedHistory;
-							} else {
-								await updateDoc(userRef, {
-									history: [url]
-								});
-								history = [url];
-							}
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						if (userSnap.data().history) {
+							const fetchedHistory = userSnap.data().history;
+							fetchedHistory.push(url);
+							await updateDoc(userRef, {
+								history: fetchedHistory
+							});
+							history = fetchedHistory;
+						} else {
+							await updateDoc(userRef, {
+								history: [url]
+							});
+							history = [url];
 						}
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						console.error(err.message);
 					}
-				} else {
-					const userStr = localStorage.getItem(`${userId}`);
-					const userLS = JSON.parse(userStr ? userStr : "");
-					if (userStr) {
-						const historyLS: string[] = userLS.history;
-						history = historyLS ? historyLS.concat(url) : [url];
-					}
-					localStorage.setItem(
-						`${userId}`,
-						JSON.stringify({
-							...userLS,
-							history,
-							favorites: state.favorites.favorites
-						})
-					);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
 
 				return { ...state.history, history };
@@ -89,23 +72,16 @@ export const historySlice = createAppSlice({
 				const state = getState() as RootState;
 				let history = state.history.history;
 				const userRef = doc(db, `users/${userId}`);
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userSnap = await getDoc(userRef);
-						if (userSnap.exists()) {
-							return { ...state.history, history: userSnap.data().history };
-						}
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						console.error(err.message);
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						return { ...state.history, history: userSnap.data().history };
 					}
-				} else {
-					const userStr = localStorage.getItem(`${userId}`);
-					if (userStr) {
-						const historyLS: string[] = JSON.parse(userStr).history;
-						history = historyLS ? historyLS : history;
-					}
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
+
 				return { ...state.history, history };
 			},
 			{

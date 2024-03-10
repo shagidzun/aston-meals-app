@@ -18,7 +18,7 @@ export interface FavoriteItem {
 	strMealThumb?: string | null | undefined;
 }
 
-interface FavoritesSliceState {
+export interface FavoritesSliceState {
 	favorites: FavoriteItem[];
 	isLoading: boolean;
 }
@@ -40,31 +40,24 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userSnap = await getDoc(userRef);
-						if (userSnap.exists()) {
-							const fetchedFavorites: FavoriteItem[] = [];
-							const favoriteRef = collection(db, `users/${userId}/favorites`);
-							const favoriteSnap = await getDocs(favoriteRef);
-							favoriteSnap.forEach(doc => {
-								//.data() возращает свой встроенный тип, поэтому тут as
-								const fetchedItem = doc.data() as FavoriteItem;
-								fetchedFavorites.push(fetchedItem);
-							});
-							favorites = fetchedFavorites;
-						}
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						console.error(err.message);
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						const fetchedFavorites: FavoriteItem[] = [];
+						const favoriteRef = collection(db, `users/${userId}/favorites`);
+						const favoriteSnap = await getDocs(favoriteRef);
+						favoriteSnap.forEach(doc => {
+							//.data() возращает свой встроенный тип, поэтому тут as
+							const fetchedItem = doc.data() as FavoriteItem;
+							fetchedFavorites.push(fetchedItem);
+						});
+						favorites = fetchedFavorites;
 					}
-				} else {
-					const userStr = localStorage.getItem(`${userId}`);
-					if (userStr) {
-						const favoritesLS: FavoriteItem[] = JSON.parse(userStr).favorites;
-						favorites = favoritesLS ? favoritesLS : favorites;
-					}
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
+
 				return {
 					...state.favorites,
 					favorites
@@ -102,77 +95,37 @@ export const favoritesSlice = createAppSlice({
 				const state = getState() as RootState;
 				let favorites: FavoriteItem[] = state.favorites.favorites;
 				const userRef = doc(db, `users/${userId}`);
-				if (REMOTE_STORE === "firebase") {
-					try {
-						const userSnap = await getDoc(userRef);
-						if (userSnap.exists()) {
-							const favoriteItemRef = doc(
-								db,
-								`users/${userId}/favorites/${strMeal}`
+				try {
+					const userSnap = await getDoc(userRef);
+					if (userSnap.exists()) {
+						const favoriteItemRef = doc(
+							db,
+							`users/${userId}/favorites/${strMeal}`
+						);
+						const favoriteItemSnap = await getDoc(favoriteItemRef);
+						if (favoriteItemSnap.exists()) {
+							await deleteDoc(favoriteItemRef);
+							favorites = favorites.filter(
+								item => item.strMeal !== strMeal && item.idMeal !== idMeal
 							);
-							const favoriteItemSnap = await getDoc(favoriteItemRef);
-							if (favoriteItemSnap.exists()) {
-								await deleteDoc(favoriteItemRef);
-								favorites = favorites.filter(
-									item => item.strMeal !== strMeal && item.idMeal !== idMeal
-								);
-							} else {
-								await setDoc(doc(db, `users/${userId}/favorites/${strMeal}`), {
-									strMeal: strMeal,
-									idMeal: idMeal,
-									strMealThumb: strMealThumb
-								});
-								favorites = favorites.concat({
-									strMeal: strMeal,
-									idMeal: idMeal,
-									strMealThumb: strMealThumb
-								});
-							}
-						}
-						//any т.к. сам ts советует давать any ошибке
-					} catch (err: any) {
-						console.error(err.message);
-					}
-				} else {
-					const userStr = localStorage.getItem(`${userId}`);
-					const userLS = JSON.parse(userStr ? userStr : "");
-					if (userStr) {
-						const favoritesLS: FavoriteItem[] = userLS.favorites;
-						if (
-							favoritesLS &&
-							favoritesLS.some(
-								item => item.idMeal === idMeal && item.strMeal === strMeal
-							)
-						) {
-							favorites = favoritesLS.filter(
-								item => item.idMeal !== idMeal && item.strMeal !== strMeal
-							);
-						} else if (favoritesLS) {
-							favorites = favoritesLS.concat({
+						} else {
+							await setDoc(doc(db, `users/${userId}/favorites/${strMeal}`), {
 								strMeal: strMeal,
 								idMeal: idMeal,
 								strMealThumb: strMealThumb
 							});
-						} else {
-							localStorage.setItem(
-								`${userId}`,
-								JSON.stringify({
-									...userLS,
-									favorites: [{ strMeal, idMeal, strMealThumb }],
-									history: state.history.history
-								})
-							);
+							favorites = favorites.concat({
+								strMeal: strMeal,
+								idMeal: idMeal,
+								strMealThumb: strMealThumb
+							});
 						}
 					}
-					localStorage.setItem(
-						`${userId}`,
-						JSON.stringify({
-							...userLS,
-							favorites,
-							history: state.history.history
-						})
-					);
+					//any т.к. сам ts советует давать any ошибке
+				} catch (err: any) {
+					console.error(err.message);
 				}
+
 				return {
 					...state.favorites,
 					favorites
